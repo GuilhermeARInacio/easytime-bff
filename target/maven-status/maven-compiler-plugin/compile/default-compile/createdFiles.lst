@@ -1,0 +1,9 @@
+easytime/bff/api/dto/DadosAutenticacao.class
+easytime/bff/api/service/AutenticacaoService.class
+easytime/bff/api/controller/AutenticacaoController.class
+easytime/bff/api/model/Usuario.class
+easytime/bff/api/validacoes/login/ValidacaoSenha.class
+easytime/bff/api/validacoes/login/ValidacoesLogin.class
+easytime/bff/api/validacoes/login/ValidacaoUsuario.class
+easytime/bff/api/EasytimeBffApplication.class
+easytime/bff/api/springDoc/SpringDocConfig.class
