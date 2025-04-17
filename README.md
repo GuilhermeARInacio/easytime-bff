@@ -72,12 +72,17 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
    ```
 5. O projeto estará disponível em: `http://localhost:8080`.
 
-## Configuração do JWT
-Certifique-se de configurar as propriedades do JWT no arquivo `application.properties` ou `application.yml`:
-```properties
-jwt.secret=seuSegredoJWT
-jwt.expiration=3600000
-```
+[//]: # (## Configuração do JWT)
+
+[//]: # (Certifique-se de configurar as propriedades do JWT no arquivo `application.properties` ou `application.yml`:)
+
+[//]: # (```properties)
+
+[//]: # (jwt.secret=seuSegredoJWT)
+
+[//]: # (jwt.expiration=3600000)
+
+[//]: # (```)
 
 ## Testes
 Para executar os testes, utilize o comando:

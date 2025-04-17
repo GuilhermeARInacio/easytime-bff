@@ -34,8 +34,6 @@ public class AutenticacaoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity autenticar(@RequestBody DadosAutenticacao dto) {
-        System.out.println(dto.senha());
-        System.out.println(dto.usuario());
         if (dto.senha() == null || dto.usuario() == null || dto == null) {
             return ResponseEntity.badRequest().body("Preencha todos os campos");
         }
@@ -58,12 +56,6 @@ public class AutenticacaoController {
             return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
         } catch (IllegalArgumentException e ){
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (NullPointerException e){
-            return ResponseEntity.badRequest().body("Preencha todos os campos.");
-        } catch (HttpMessageNotReadableException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e){
-            return ResponseEntity.internalServerError().body("Erro interno do servidor");
         }
     }
 }
