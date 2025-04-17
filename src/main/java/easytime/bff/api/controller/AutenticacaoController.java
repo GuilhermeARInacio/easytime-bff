@@ -38,6 +38,18 @@ public class AutenticacaoController {
             var token = service.autenticar(dto);
             return ResponseEntity.ok(token);
         } catch (HttpClientErrorException e){
+            if (e.getStatusCode().is4xxClientError()) {
+                if (e.getStatusCode().value() == 401) {
+                    return ResponseEntity.status(e.getStatusCode()).body("Usuário não autorizado");
+                } if (e.getStatusCode().value() == 404) {
+                    return ResponseEntity.status(e.getStatusCode().value()).body("Serviço não encontrado");
+                }
+                return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            } if (e.getStatusCode().is5xxServerError()) {
+                return ResponseEntity.status(e.getStatusCode()).body("Erro interno do servidor");
+            }
+            return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
+        } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
