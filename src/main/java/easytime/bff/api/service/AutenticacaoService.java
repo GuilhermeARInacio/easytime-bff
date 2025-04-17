@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import easytime.bff.api.dto.DadosAutenticacao;
 import easytime.bff.api.validacoes.login.ValidacaoUsuario;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -15,7 +16,7 @@ public class AutenticacaoService {
 
     private ValidacaoUsuario validacoes;
 
-    public String autenticar(DadosAutenticacao usuario) {
+    public String autenticar(DadosAutenticacao usuario) throws HttpMessageNotReadableException {
         try {
             HttpClient client = HttpClient.newHttpClient();
             RestTemplate restTemplate = new RestTemplate();
@@ -25,6 +26,8 @@ public class AutenticacaoService {
             return response;
         } catch (HttpClientErrorException e) {
             throw new HttpClientErrorException(e.getStatusCode(), e.getResponseBodyAsString());
+        } catch (HttpMessageNotReadableException e){
+            throw new HttpMessageNotReadableException("Formato de JSON Inválido. Verifique o corpo da requisição");
         }
     }
 }

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,10 +30,15 @@ public class AutenticacaoController {
     @Operation(summary = "Logar com um usuário", description = "Retorna um token valido para acessar os outros endpoints da API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna um token JWT"),
-            @ApiResponse(responseCode = "404", description = "Formato de senha ou usuário inválido"),
+            @ApiResponse(responseCode = "400", description = "Formato de senha ou usuário inválido, ou campos vazios"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity autenticar(@RequestBody DadosAutenticacao dto) {
+        System.out.println(dto.senha());
+        System.out.println(dto.usuario());
+        if (dto.senha() == null || dto.usuario() == null || dto == null) {
+            return ResponseEntity.badRequest().body("Preencha todos os campos");
+        }
         try{
             validacoes.forEach(v -> v.validar(dto));
 
@@ -50,8 +56,14 @@ public class AutenticacaoController {
                 return ResponseEntity.status(e.getStatusCode()).body("Erro interno do servidor");
             }
             return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e ){
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (NullPointerException e){
+            return ResponseEntity.badRequest().body("Preencha todos os campos.");
+        } catch (HttpMessageNotReadableException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body("Erro interno do servidor");
         }
     }
 }
