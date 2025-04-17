@@ -13,7 +13,7 @@ public class ValidacaoSenha implements ValidacoesLogin {
         Boolean temCaracteresEspeciais = dto.senha().matches(".*[!@#$%^&*(),.?\":{}|<>].*");
 
         if(senhaVazia || tamanhoInvalido || !temLetras || !temNumeros || !temCaracteresEspeciais) {
-            throw new RuntimeException("Formato de senha inválido");
+            throw new IllegalArgumentException("Formato de senha inválido");
         }
     }
 }
