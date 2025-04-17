@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -28,16 +29,15 @@ public class AutenticacaoController {
     @Operation(summary = "Logar com um usuário", description = "Retorna um token valido para acessar os outros endpoints da API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna um token JWT"),
-            @ApiResponse(responseCode = "400", description = "Formato de senha ou usuário inválido")
+            @ApiResponse(responseCode = "400", description = "Formato de senha ou usuário inválido"),
     })
     public ResponseEntity autenticar(@RequestBody DadosAutenticacao dto) {
         try{
             validacoes.forEach(v -> v.validar(dto));
 
-            String tokenJWT = service.autenticar(dto);
-
-            return ResponseEntity.ok(tokenJWT);
-        } catch (Exception e){
+            var token = service.autenticar(dto);
+            return ResponseEntity.ok(token);
+        } catch (HttpClientErrorException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
