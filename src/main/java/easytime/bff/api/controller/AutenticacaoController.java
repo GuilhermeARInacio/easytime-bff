@@ -29,7 +29,8 @@ public class AutenticacaoController {
     @Operation(summary = "Logar com um usuário", description = "Retorna um token valido para acessar os outros endpoints da API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna um token JWT"),
-            @ApiResponse(responseCode = "400", description = "Formato de senha ou usuário inválido"),
+            @ApiResponse(responseCode = "404", description = "Formato de senha ou usuário inválido"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity autenticar(@RequestBody DadosAutenticacao dto) {
         try{
