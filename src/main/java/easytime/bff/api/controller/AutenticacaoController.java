@@ -2,16 +2,20 @@ package easytime.bff.api.controller;
 
 import easytime.bff.api.dto.DadosAutenticacao;
 import easytime.bff.api.service.AutenticacaoService;
+import easytime.bff.api.util.ExceptionHandlerUtil;
 import easytime.bff.api.validacoes.login.ValidacoesLogin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -26,6 +30,8 @@ public class AutenticacaoController {
     @Autowired
     private List<ValidacoesLogin> validacoes;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AutenticacaoController.class);
+
     @PostMapping
     @Operation(summary = "Logar com um usuário", description = "Retorna um token valido para acessar os outros endpoints da API")
     @ApiResponses(value = {
@@ -33,37 +39,21 @@ public class AutenticacaoController {
             @ApiResponse(responseCode = "400", description = "Formato de senha ou usuário inválido, ou campos vazios"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
-    public ResponseEntity autenticar(@RequestBody DadosAutenticacao dto) {
-        System.out.println(dto.senha());
-        System.out.println(dto.usuario());
-        if (dto.senha() == null || dto.usuario() == null || dto == null) {
-            return ResponseEntity.badRequest().body("Preencha todos os campos");
+    public ResponseEntity<?> autenticar(@RequestBody DadosAutenticacao dto) {
+        LOGGER.debug("Iniciando autenticação para o usuário: {}", dto.usuario());
+
+        if (dto == null || dto.senha() == null || dto.usuario() == null) {
+            return ResponseEntity.badRequest().body("Preencha todos os campos.");
         }
-        try{
+        try {
             validacoes.forEach(v -> v.validar(dto));
 
-            var token = service.autenticar(dto);
-            return ResponseEntity.ok(token);
-        } catch (HttpClientErrorException e){
-            if (e.getStatusCode().is4xxClientError()) {
-                if (e.getStatusCode().value() == 401) {
-                    return ResponseEntity.status(e.getStatusCode()).body("Usuário não autorizado");
-                } if (e.getStatusCode().value() == 404) {
-                    return ResponseEntity.status(e.getStatusCode().value()).body("Serviço não encontrado");
-                }
-                return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
-            } if (e.getStatusCode().is5xxServerError()) {
-                return ResponseEntity.status(e.getStatusCode()).body("Erro interno do servidor");
-            }
-            return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
-        } catch (IllegalArgumentException e ){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (NullPointerException e){
-            return ResponseEntity.badRequest().body("Preencha todos os campos.");
-        } catch (HttpMessageNotReadableException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e){
-            return ResponseEntity.internalServerError().body("Erro interno do servidor");
+            LOGGER.info("Autenticação bem-sucedida para o usuário: {}", dto.usuario());
+            return ResponseEntity.ok(service.autenticar(dto));
+
+        } catch (Exception e) {
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
+
 }
