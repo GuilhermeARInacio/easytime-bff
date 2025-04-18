@@ -2,6 +2,7 @@
 /home/runner/workspace/src/main/java/easytime/bff/api/controller/AutenticacaoController.java
 /home/runner/workspace/src/main/java/easytime/bff/api/controller/HealthController.java
 /home/runner/workspace/src/main/java/easytime/bff/api/dto/DadosAutenticacao.java
+/home/runner/workspace/src/main/java/easytime/bff/api/infra/exception/GlobalExceptionHandler.java
 /home/runner/workspace/src/main/java/easytime/bff/api/model/Usuario.java
 /home/runner/workspace/src/main/java/easytime/bff/api/service/AutenticacaoService.java
 /home/runner/workspace/src/main/java/easytime/bff/api/springDoc/SpringDocConfig.java
