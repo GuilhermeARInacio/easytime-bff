@@ -1,4 +1,4 @@
 package easytime.bff.api.dto;
 
-public record DadosAutenticacao (String usuario, String senha) {
+public record DadosAutenticacao (String login, String senha) {
 }

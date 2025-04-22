@@ -40,15 +40,15 @@ public class AutenticacaoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity<?> autenticar(@RequestBody DadosAutenticacao dto) {
-        LOGGER.debug("Iniciando autenticação para o usuário: {}", dto.usuario());
+        LOGGER.debug("Iniciando autenticação para o usuário: {}", dto.login());
 
-        if (dto == null || dto.senha() == null || dto.usuario() == null) {
+        if (dto == null || dto.senha() == null || dto.login() == null) {
             return ResponseEntity.badRequest().body("Preencha todos os campos.");
         }
         try {
             validacoes.forEach(v -> v.validar(dto));
 
-            LOGGER.info("Autenticação bem-sucedida para o usuário: {}", dto.usuario());
+            LOGGER.info("Autenticação bem-sucedida para o usuário: {}", dto.login());
             return ResponseEntity.ok(service.autenticar(dto));
 
         } catch (Exception e) {

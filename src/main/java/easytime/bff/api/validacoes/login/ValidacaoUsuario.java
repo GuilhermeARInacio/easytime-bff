@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ValidacaoUsuario implements ValidacoesLogin {
     public void validar(DadosAutenticacao dto) {
-        if(dto.usuario().isEmpty() || dto.usuario().isBlank()) {
-            throw new RuntimeException("O usuario não pode ser vazio");
+        if(dto.login().isEmpty() || dto.login().isBlank()) {
+            throw new RuntimeException("O usuário não pode ser vazio");
         }
-        if(!dto.usuario().matches(".*[a-zA-Z].*")) {
-            throw new IllegalArgumentException("Formato do usuario inválido");
+        if(!dto.login().matches(".*[a-zA-Z].*")) {
+            throw new IllegalArgumentException("Formato do usuário inválido");
         }
     }
 }
