@@ -1,5 +1,6 @@
 easytime/bff/api/dto/DadosAutenticacao.class
 easytime/bff/api/service/AutenticacaoService.class
+easytime/bff/api/infra/exception/GlobalExceptionHandler.class
 easytime/bff/api/controller/AutenticacaoController.class
 easytime/bff/api/model/Usuario.class
 easytime/bff/api/controller/HealthController.class
