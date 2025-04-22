@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -34,7 +33,7 @@ public class AutenticacaoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity autenticar(@RequestBody DadosAutenticacao dto) {
-        if (dto.senha() == null || dto.usuario() == null || dto == null) {
+        if (dto.senha() == null || dto.login() == null || dto == null) {
             return ResponseEntity.badRequest().body("Preencha todos os campos");
         }
         try{

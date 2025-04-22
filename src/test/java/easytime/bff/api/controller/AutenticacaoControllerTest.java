@@ -51,7 +51,7 @@ class AutenticacaoControllerTest {
     void codigo200paraSucesso() {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn("senha");
-        when(dto.usuario()).thenReturn("usuario");
+        when(dto.login()).thenReturn("usuario");
         when(service.autenticar(dto)).thenReturn("token");
 
         ResponseEntity<?> response = controller.autenticar(dto);
@@ -63,7 +63,7 @@ class AutenticacaoControllerTest {
     void codigo400paraCamposEmBranco() {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn(null);
-        when(dto.usuario()).thenReturn("usuario");
+        when(dto.login()).thenReturn("usuario");
 
         ResponseEntity<?> response = controller.autenticar(dto);
         assertEquals(400, response.getStatusCode().value());
@@ -88,7 +88,7 @@ class AutenticacaoControllerTest {
     void codigo401paraUsuarioNaoAutorizado() {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn("senha");
-        when(dto.usuario()).thenReturn("usuario");
+        when(dto.login()).thenReturn("usuario");
         when(service.autenticar(dto)).thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
 
         ResponseEntity<?> response = controller.autenticar(dto);
@@ -100,7 +100,7 @@ class AutenticacaoControllerTest {
     void codigo404paraErroInterno() {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn("senha");
-        when(dto.usuario()).thenReturn("usuario");
+        when(dto.login()).thenReturn("usuario");
         when(service.autenticar(dto)).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
         ResponseEntity<?> response = controller.autenticar(dto);
@@ -112,7 +112,7 @@ class AutenticacaoControllerTest {
     void codigo500paraErroInterno() {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn("senha");
-        when(dto.usuario()).thenReturn("usuario");
+        when(dto.login()).thenReturn("usuario");
         when(service.autenticar(dto)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
         ResponseEntity<?> response = controller.autenticar(dto);
@@ -124,7 +124,7 @@ class AutenticacaoControllerTest {
     void codigo400paraFormatoInvalido() throws Exception {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn("senha");
-        when(dto.usuario()).thenReturn("usuario");
+        when(dto.login()).thenReturn("usuario");
         when(service.autenticar(dto)).thenThrow(new IllegalArgumentException());
 
         ResponseEntity<?> response = controller.autenticar(dto);
