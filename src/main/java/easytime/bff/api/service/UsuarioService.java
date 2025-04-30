@@ -10,11 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.http.HttpClient;
 import org.springframework.http.HttpHeaders;
 import java.util.Enumeration;
-
-import static org.springframework.http.HttpMethod.*;
 
 @Service
 public class UsuarioService {

@@ -23,11 +23,16 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var tokenJWT = recuperarToken(request);
-        if (tokenService.validate(tokenJWT)) {
-            var authentication = new UsernamePasswordAuthenticationToken("", "", Collections.emptyList());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (tokenJWT != null && !tokenJWT.isEmpty()) {
+            if (tokenService.validate(tokenJWT)) {
+                var authentication = new UsernamePasswordAuthenticationToken("", "", Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                throw new SecurityException("Token invalido");
+            }
+        } else {
+            throw new SecurityException("Token não encontrado");
         }
-
         filterChain.doFilter(request, response);
     }
 
