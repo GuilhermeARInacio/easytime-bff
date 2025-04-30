@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RestController
@@ -30,7 +27,7 @@ public class UsuarioController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsuarioController.class);
 
-    @PostMapping("/create")
+    @PutMapping("/create")
     public ResponseEntity criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
 
@@ -41,7 +38,8 @@ public class UsuarioController {
             //validacoes.forEach(v -> v.validar(dto));
 
             LOGGER.debug("Cadastro bem sucedido para o usuário: {}", dto.login());
-            return ResponseEntity.ok(service.criarUsuario(dto, request));
+            ResponseEntity<Object> response = service.criarUsuario(dto, request);
+            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
         } catch (Exception e) {
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
