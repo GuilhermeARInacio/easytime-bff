@@ -1,9 +1,6 @@
 package easytime.bff.api.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import easytime.bff.api.dto.DadosAutenticacao;
-import easytime.bff.api.validacoes.login.ValidacaoUsuario;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

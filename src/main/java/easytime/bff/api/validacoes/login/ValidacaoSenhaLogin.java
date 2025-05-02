@@ -4,7 +4,7 @@ import easytime.bff.api.dto.DadosAutenticacao;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidacaoSenha implements ValidacoesLogin {
+public class ValidacaoSenhaLogin implements ValidacoesLogin {
     public void validar(DadosAutenticacao dto) {
         Boolean senhaVazia = dto.senha().isEmpty() || dto.senha().isBlank();
         Boolean tamanhoInvalido = dto.senha().length() < 8;

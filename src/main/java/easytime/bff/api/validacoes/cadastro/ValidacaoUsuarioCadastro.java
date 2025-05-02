@@ -1,11 +1,11 @@
-package easytime.bff.api.validacoes.login;
+package easytime.bff.api.validacoes.cadastro;
 
-import easytime.bff.api.dto.DadosAutenticacao;
+import easytime.bff.api.dto.UsuarioDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidacaoUsuario implements ValidacoesLogin {
-    public void validar(DadosAutenticacao dto) {
+public class ValidacaoUsuarioCadastro implements ValidacoesCadastro {
+    public void validar(UsuarioDto dto) {
         if(dto.login().isEmpty() || dto.login().isBlank()) {
             throw new RuntimeException("O usuário não pode ser vazio");
         }
