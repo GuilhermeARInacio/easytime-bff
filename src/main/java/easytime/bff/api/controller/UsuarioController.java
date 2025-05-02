@@ -2,10 +2,15 @@ package easytime.bff.api.controller;
 
 import easytime.bff.api.dto.DadosAutenticacao;
 import easytime.bff.api.dto.UsuarioDto;
+import easytime.bff.api.dto.UsuarioRetornoDto;
+import easytime.bff.api.model.Usuario;
 import easytime.bff.api.service.AutenticacaoService;
 import easytime.bff.api.service.UsuarioService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import easytime.bff.api.validacoes.cadastro.ValidacoesCadastro;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +36,12 @@ public class UsuarioController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UsuarioController.class);
 
     @PutMapping("/create")
+    @Operation(summary = "Criar usuário", description = "Envia um UsuarioDto para api e cria um usuário no banco de dados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Formato dos campos inválido"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
     public ResponseEntity criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
 
@@ -44,6 +55,57 @@ public class UsuarioController {
             ResponseEntity<Object> response = service.criarUsuario(dto, request);
             return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
         } catch (Exception e) {
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "Listar usuários", description = "Lista todos os usuários cadastrados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista todos os usuários cadastrados"),
+            @ApiResponse(responseCode = "400", description = "Não há usuários cadastrados"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
+    public ResponseEntity<?> listarUsuarios(HttpServletRequest request) {
+        LOGGER.debug("Listando todos os usuários");
+        try {
+            ResponseEntity<List<UsuarioRetornoDto>> response = service.listarUsuarios(request);
+            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
+        } catch (Exception e){
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @GetMapping("/getById/{id}")
+    @Operation(summary = "Encontrar usuário pelo id", description = "Retorna um usuário de acordo com o id informado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna o usuário referente ao id informado"),
+            @ApiResponse(responseCode = "400", description = "Não há um usuário com esse id cadastrado"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
+    public ResponseEntity<?> listarUsuarios(@PathVariable Integer id, HttpServletRequest request) {
+        LOGGER.debug("Listando usuário com id: {}", id);
+        try {
+            ResponseEntity<UsuarioRetornoDto> response = service.listarUsuarioPorId(id, request);
+            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
+        } catch (Exception e){
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Deleta usuário pelo id", description = "Deleta um usuário de acordo com o id informado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleta o usuário referente ao id informado"),
+            @ApiResponse(responseCode = "400", description = "Não há um usuário com esse id cadastrado"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
+    public ResponseEntity<?> deletarUsuario(@PathVariable Integer id, HttpServletRequest request) {
+        LOGGER.debug("Deletando usuário com id: {}", id);
+        try {
+            ResponseEntity<String> response = service.deletarUsuario(id, request);
+            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
+        } catch (Exception e){
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }

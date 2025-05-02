@@ -3,7 +3,6 @@ package easytime.bff.api.service;
 import easytime.bff.api.dto.DadosAutenticacao;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.http.HttpClient;

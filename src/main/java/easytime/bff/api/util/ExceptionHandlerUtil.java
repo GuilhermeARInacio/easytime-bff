@@ -13,6 +13,13 @@ public class ExceptionHandlerUtil {
         } else if (e instanceof IllegalArgumentException || e instanceof NullPointerException || e instanceof HttpMessageNotReadableException) {
             logger.warn("Erro de validação: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage() != null ? e.getMessage() : "Erro de validação nos campos fornecidos.");
+        } else if (e instanceof RuntimeException) {
+            int statusCode = 400;
+            if(e.getMessage().contains("404")){
+                statusCode = 404;
+            }
+            logger.warn("Erro de execução: {}", e.getMessage());
+            return ResponseEntity.status(statusCode).body("Usuário não encontrado.");
         } else {
             logger.error("Erro interno do servidor", e);
             return ResponseEntity.internalServerError().body("Erro interno do servidor.");
