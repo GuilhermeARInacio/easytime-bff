@@ -1,4 +1,4 @@
-package easytime.bff.api.springDoc;
+package easytime.bff.api.infra.springDoc;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
