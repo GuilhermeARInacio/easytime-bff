@@ -20,10 +20,8 @@ public class AutenticacaoService {
             String response = restTemplate.postForObject(url, usuario, String.class);
 
             return response;
-        } catch (HttpClientErrorException e) {
-            throw new HttpClientErrorException(e.getStatusCode(), e.getResponseBodyAsString());
-        } catch (HttpMessageNotReadableException e){
-            throw new HttpMessageNotReadableException("Formato de JSON Inválido. Verifique o corpo da requisição");
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao autenticar usuário: " + e.getMessage(), e);
         }
     }
 }

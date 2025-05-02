@@ -12,8 +12,16 @@ public class ValidacaoSenhaCadastro implements ValidacoesCadastro {
         Boolean temNumeros = dto.password().matches(".*\\d.*");
         Boolean temCaracteresEspeciais = dto.password().matches(".*[!@#$%^&*(),.?\":{}|<>].*");
 
-        if(senhaVazia || tamanhoInvalido || !temLetras || !temNumeros || !temCaracteresEspeciais) {
-            throw new IllegalArgumentException("Formato de senha inválido");
+        if (senhaVazia) {
+            throw new IllegalArgumentException("A senha não pode ser vazia");
+        } else if (tamanhoInvalido) {
+            throw new IllegalArgumentException("A senha deve ter pelo menos 8 caracteres");
+        } else if (!temLetras) {
+            throw new IllegalArgumentException("A senha deve conter pelo menos uma letra");
+        } else if (!temNumeros) {
+            throw new IllegalArgumentException("A senha deve conter pelo menos um número");
+        } else if (!temCaracteresEspeciais) {
+            throw new IllegalArgumentException("A senha deve conter pelo menos um caractere especial");
         }
     }
 }

@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -28,10 +29,12 @@ public class SecurityFilter extends OncePerRequestFilter {
                 var authentication = new UsernamePasswordAuthenticationToken("", "", Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                throw new SecurityException("Token invalido");
+                // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token invalido.");
+                // throw new SecurityException("Token inválido.");
             }
         } else {
-            throw new SecurityException("Token não encontrado");
+            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token não encontrado.");
+            // throw new SecurityException("Token não encontrado.");
         }
         filterChain.doFilter(request, response);
     }

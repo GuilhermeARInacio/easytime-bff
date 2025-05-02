@@ -10,7 +10,7 @@ public class ValidacaoUsuarioCadastro implements ValidacoesCadastro {
             throw new RuntimeException("O usuário não pode ser vazio");
         }
         if(!dto.login().matches(".*[a-zA-Z].*")) {
-            throw new IllegalArgumentException("Formato do usuário inválido");
+            throw new IllegalArgumentException("Usuário deve conter letras");
         }
     }
 }
