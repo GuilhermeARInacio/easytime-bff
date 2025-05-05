@@ -19,8 +19,6 @@ public record UsuarioDto(
         @Schema(description = "Função do usuário", example = "ROLE_USER")
         String role,
         @Schema(description = "Ativo", example = "true")
-        boolean isActive,
-        @Schema(description = "Valido", example = "true")
-        boolean valid
+        boolean isActive
 ) {
 }

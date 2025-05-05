@@ -17,9 +17,10 @@ public class ExceptionHandlerUtil {
             int statusCode = 400;
             if(e.getMessage().contains("404")){
                 statusCode = 404;
+                return ResponseEntity.status(statusCode).body("Usuário não encontrado.");
             }
             logger.warn("Erro de execução: {}", e.getMessage());
-            return ResponseEntity.status(statusCode).body("Usuário não encontrado.");
+            return ResponseEntity.status(statusCode).body(e.getMessage());
         } else {
             logger.error("Erro interno do servidor", e);
             return ResponseEntity.internalServerError().body("Erro interno do servidor.");

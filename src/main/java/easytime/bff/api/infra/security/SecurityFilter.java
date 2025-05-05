@@ -28,18 +28,12 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (tokenService.validate(tokenJWT)) {
                 var authentication = new UsernamePasswordAuthenticationToken("", "", Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token invalido.");
-                // throw new SecurityException("Token inválido.");
             }
-        } else {
-            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token não encontrado.");
-            // throw new SecurityException("Token não encontrado.");
         }
         filterChain.doFilter(request, response);
     }
 
-    private String recuperarToken(HttpServletRequest request) {
+    public String recuperarToken(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null) {
             return authorizationHeader.replace("Bearer ", "");

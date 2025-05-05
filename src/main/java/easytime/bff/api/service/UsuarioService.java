@@ -2,18 +2,16 @@ package easytime.bff.api.service;
 
 import easytime.bff.api.dto.UsuarioDto;
 import easytime.bff.api.dto.UsuarioRetornoDto;
-import easytime.bff.api.model.Usuario;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import org.springframework.http.HttpHeaders;
-import java.util.Enumeration;
+
 import java.util.List;
 
 import static org.springframework.http.HttpMethod.*;
@@ -29,7 +27,6 @@ public class UsuarioService {
 
             HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
             return restTemplate.exchange(url, PUT, entity, Object.class);
-
         } catch (Exception e) {
             throw new RuntimeException("Erro ao criar usuário: " + e.getMessage(), e);
         }
