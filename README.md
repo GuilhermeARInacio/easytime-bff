@@ -9,15 +9,15 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
 - **Autenticação de Usuário**:
     - Rota de login que recebe as credenciais (usuário e senha).
     - Validação de senha com regras específicas.
-- **Cadastro de Usuário**:
+- **CRUD de Usuários**:
     - Rota de cadastro de um novo usuário, deve ser feito por um usuario ja cadastrado.
-    - Validação de campos com regras específicas.
-- **Listagem de Usuários**:
-    - Rota de listagem de todos os usuário cadastrados.
-- **Retorno de um Usuário**:
+    - Rota de listagem de todos os usuários cadastrados.
     - Rota que retorna um usuário de acordo com o ID informado.
-- **Exclusão de Usuários**:
     - Rota para excluir um usuário de acordo com o ID informado.
+    - Validação de campos com regras específicas.
+- **Troca de senha**:
+    - Rota para enviar um código de validação para um email válido.
+    - Rota para validar o código enviado e permitir a troca de senha.
 
 ## Tecnologias Utilizadas
 - **Java 17**
@@ -31,9 +31,9 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
 - `src/main/java/easytime/bff/api/dto`: Contém os DTOs (Data Transfer Objects) utilizados para transferência de dados.
 - `src/main/java/easytime/bff/api/service`: Contém as regras de negócio e serviços.
 - `src/main/java/easytime/bff/api/validacoes`: Contém as validações específicas, como validação de senha.
-- `src/main/java/easytime/bff/api/infra`: 
-- `src/main/java/easytime/bff/api/model`: 
-- `src/main/java/easytime/bff/api/util`: 
+- `src/main/java/easytime/bff/api/infra`: Contém os componentes de infraestrutura, como configuração de segurança e JWT.
+- `src/main/java/easytime/bff/api/model`: Contém os modelos de dados, como o modelo de usuário.
+- `src/main/java/easytime/bff/api/util`: Contém utilitários e classes auxiliares.
 
 ## Endpoints
 
@@ -98,7 +98,7 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
           }
           ```
         - **400 Bad Request**: Retorna uma mensagem de erro caso os dados sejam inválidos.
-        - **403 Forbidden**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
+        - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
 ### Listagem de Usuário
 **GET** `/users/list`
@@ -130,7 +130,7 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
             ]
           ```
         - **400 Bad Request**: Retorna uma mensagem de erro caso não haja usuários cadastrados.
-        - **403 Forbidden**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
+        - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
 ### Usuário por ID
 **GET** `/users/getById/{id}`
@@ -150,7 +150,7 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
             }
         ```
       - **400 Bad Request**: Retorna uma mensagem de erro caso não haja um usuário com o ID informado.
-      - **403 Forbidden**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
+      - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
 ### Deletar Usuário por ID
 **GET** `/users/delete/{id}`
@@ -158,7 +158,23 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
     - **Response**:
         - **200 OK**: Retorna uma mensagem de sucesso.
         - **400 Bad Request**: Retorna uma mensagem de erro caso não haja um usuário com o ID informado.
-        - **403 Forbidden**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
+        - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
+
+### Envio de Código de Validação
+**POST** `/senha/enviar-codigo`
+- **Descrição**: Envia um código de validação para o email informado.
+    - **Response**:
+        - **200 OK**: Retorna uma mensagem de sucesso.
+        - **400 Bad Request**: Retorna uma mensagem de erro caso o campo não tenha sido informado.
+        - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
+
+### Redefinição de senha
+**POST** `/senha/redefinir`
+- **Descrição**: Redefine a senha do usuário.
+    - **Response**:
+        - **200 OK**: Retorna uma mensagem de sucesso.
+        - **400 Bad Request**: Retorna uma mensagem de erro caso um dos campos não tenha sido informado.
+        - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
 
 ## Regras de Validação de Senha
@@ -183,19 +199,17 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
    ```bash
    mvn spring-boot:run
    ```
-5. O projeto estará disponível em: `http://localhost:8080`.
+5. O projeto estará disponível em: `http://localhost:8081`.
 
-[//]: # (## Configuração do JWT)
+## Configuração do JWT
 
-[//]: # (Certifique-se de configurar as propriedades do JWT no arquivo `application.properties` ou `application.yml`:)
+Certifique-se de configurar as propriedades do JWT em um arquivo `.env`:
 
-[//]: # (```properties)
+```properties
 
-[//]: # (jwt.secret=seuSegredoJWT)
+JWT_SECRET=seuSegredoJWT
 
-[//]: # (jwt.expiration=3600000)
-
-[//]: # (```)
+```
 
 ## Testes
 Para executar os testes, utilize o comando:
