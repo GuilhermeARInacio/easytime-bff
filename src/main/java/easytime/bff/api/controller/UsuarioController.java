@@ -51,6 +51,7 @@ public class UsuarioController {
             ResponseEntity<Object> response = service.criarUsuario(dto, request);
             return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
         } catch (Exception e) {
+            LOGGER.error("Erro ao cadastrar o usuário: {}", dto.login(), e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
