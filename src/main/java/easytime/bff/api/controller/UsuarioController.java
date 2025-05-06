@@ -1,10 +1,7 @@
 package easytime.bff.api.controller;
 
-import easytime.bff.api.dto.DadosAutenticacao;
 import easytime.bff.api.dto.UsuarioDto;
 import easytime.bff.api.dto.UsuarioRetornoDto;
-import easytime.bff.api.model.Usuario;
-import easytime.bff.api.service.AutenticacaoService;
 import easytime.bff.api.service.UsuarioService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import easytime.bff.api.validacoes.cadastro.ValidacoesCadastro;
@@ -16,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +36,7 @@ public class UsuarioController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Formato dos campos inválido"),
-            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
@@ -64,7 +60,7 @@ public class UsuarioController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista todos os usuários cadastrados"),
             @ApiResponse(responseCode = "400", description = "Não há usuários cadastrados"),
-            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity<?> listarUsuarios(HttpServletRequest request) {
         LOGGER.debug("Listando todos os usuários");
@@ -81,7 +77,7 @@ public class UsuarioController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o usuário referente ao id informado"),
             @ApiResponse(responseCode = "400", description = "Não há um usuário com esse id cadastrado"),
-            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity<?> listarUsuarios(@PathVariable Integer id, HttpServletRequest request) {
         LOGGER.debug("Listando usuário com id: {}", id);
@@ -98,7 +94,7 @@ public class UsuarioController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleta o usuário referente ao id informado"),
             @ApiResponse(responseCode = "400", description = "Não há um usuário com esse id cadastrado"),
-            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     public ResponseEntity<?> deletarUsuario(@PathVariable Integer id, HttpServletRequest request) {
         LOGGER.debug("Deletando usuário com id: {}", id);

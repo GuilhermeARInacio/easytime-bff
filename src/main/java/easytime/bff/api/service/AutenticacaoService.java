@@ -20,7 +20,7 @@ public class AutenticacaoService {
 
             return response;
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao autenticar usuário: " + e.getMessage(), e);
+            throw e;
         }
     }
 }

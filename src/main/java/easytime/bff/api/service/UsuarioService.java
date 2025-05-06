@@ -28,7 +28,7 @@ public class UsuarioService {
             HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
             return restTemplate.exchange(url, PUT, entity, Object.class);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao criar usuário: " + e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -42,7 +42,7 @@ public class UsuarioService {
                     new ParameterizedTypeReference<List<UsuarioRetornoDto>>() {});
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao listar usuários: " + e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -56,7 +56,7 @@ public class UsuarioService {
                     UsuarioRetornoDto.class);
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao listar usuário por ID: " + e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -70,7 +70,7 @@ public class UsuarioService {
                     String.class);
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao deletar usuário: " + e.getMessage(), e);
+            throw e;
         }
     }
 }

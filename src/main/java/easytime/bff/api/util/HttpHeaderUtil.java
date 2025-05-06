@@ -2,9 +2,11 @@ package easytime.bff.api.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 
 import java.util.Enumeration;
 
+@Component
 public class HttpHeaderUtil {
 
     public static HttpHeaders copyHeaders(HttpServletRequest request) {

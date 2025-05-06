@@ -81,7 +81,7 @@ class AutenticacaoServiceTest {
     @DisplayName("Deve dar HttpClientError")
     void deveriaDarHttpClientError(){
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn("senha@123");
+        when(dto.senha()).thenReturn("senha");
         when(dto.login()).thenReturn("login");
 
         RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
