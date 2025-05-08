@@ -87,11 +87,13 @@ class AutenticacaoServiceTest {
         RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
         String url = "http://localhost:8080/login";
 
+
         // Simula o comportamento do RestTemplate
         when(restTemplateMock.postForObject(url, dto, String.class)).thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> service.autenticar(dto));
+
     }
 
     @Test

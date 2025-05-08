@@ -1,6 +1,8 @@
 package easytime.bff.api.service;
 
 import easytime.bff.api.dto.DadosAutenticacao;
+
+import easytime.bff.api.validacoes.login.ValidacaoUsuarioLogin;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,6 +11,8 @@ import java.net.http.HttpClient;
 
 @Service
 public class AutenticacaoService {
+
+    private ValidacaoUsuarioLogin validacoes;
 
     public String autenticar(DadosAutenticacao usuario) throws HttpMessageNotReadableException {
         try {
