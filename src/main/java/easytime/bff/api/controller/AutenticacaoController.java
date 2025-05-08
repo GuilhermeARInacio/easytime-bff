@@ -50,7 +50,6 @@ public class AutenticacaoController {
 
             LOGGER.info("Autenticação bem-sucedida para o usuário: {}", dto.login());
             return ResponseEntity.ok(service.autenticar(dto));
-
         } catch (Exception e) {
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }

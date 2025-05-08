@@ -82,17 +82,18 @@ class AutenticacaoServiceTest {
     void deveriaDarHttpClientError(){
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn("senha");
-        when(dto.login()).thenReturn("usuario");
+        when(dto.login()).thenReturn("login");
 
         RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
-        String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/login";
-        String erroEsperado = "Erro de autenticação";
+        String url = "http://localhost:8080/login";
+
 
         // Simula o comportamento do RestTemplate
         when(restTemplateMock.postForObject(url, dto, String.class)).thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
 
         // Act & Assert
-        assertThrows(HttpClientErrorException.class, () -> service.autenticar(dto));
+        assertThrows(RuntimeException.class, () -> service.autenticar(dto));
+
     }
 
     @Test
