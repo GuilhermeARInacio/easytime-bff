@@ -16,9 +16,13 @@ import static org.springframework.http.HttpMethod.POST;
 @Service
 public class SenhaService {
 
+    private RestTemplate restTemplate;
+
     public ResponseEntity<String> redefinirSenha(CodigoValidacao codigo, HttpServletRequest request) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
+            if (restTemplate == null) {
+                restTemplate = new RestTemplate();
+            }
             String url = "http://localhost:8080/redefine-senha";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
@@ -31,7 +35,9 @@ public class SenhaService {
 
     public ResponseEntity<String> enviarCodigo(EmailRequest email, HttpServletRequest request) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
+            if (restTemplate == null) {
+                restTemplate = new RestTemplate();
+            }
             String url = "http://localhost:8080/send-email";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 

@@ -24,7 +24,7 @@ public class UsuarioService {
     public ResponseEntity<Object> criarUsuario(UsuarioDto dto, HttpServletRequest request) {
         try {
             if (restTemplate == null) {
-                RestTemplate restTemplate = new RestTemplate();
+                restTemplate = new RestTemplate();
             }
 
             String url = "http://localhost:8080/users/create";
@@ -40,7 +40,7 @@ public class UsuarioService {
     public ResponseEntity<List<UsuarioRetornoDto>> listarUsuarios(HttpServletRequest request) {
         try {
             if (restTemplate == null) {
-                RestTemplate restTemplate = new RestTemplate();
+                restTemplate = new RestTemplate();
             }
             String url = "http://localhost:8080/users/list";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
@@ -56,7 +56,7 @@ public class UsuarioService {
     public ResponseEntity<UsuarioRetornoDto> listarUsuarioPorId(Integer id, HttpServletRequest request) {
         try {
             if (restTemplate == null) {
-                RestTemplate restTemplate = new RestTemplate();
+                restTemplate = new RestTemplate();
             }
             String url = "http://localhost:8080/users/getById/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
@@ -72,7 +72,7 @@ public class UsuarioService {
     public ResponseEntity<String> deletarUsuario(Integer id, HttpServletRequest request) {
         try {
             if (restTemplate == null) {
-                RestTemplate restTemplate = new RestTemplate();
+                restTemplate = new RestTemplate();
             }
             String url = "http://localhost:8080/users/delete/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
