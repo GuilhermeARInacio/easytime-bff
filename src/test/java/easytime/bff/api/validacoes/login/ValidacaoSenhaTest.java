@@ -12,7 +12,7 @@ class ValidacaoSenhaTest {
     @Test
     @DisplayName("Deve validar senha com sucesso")
     void deveValidarSenhaComSucesso() {
-        ValidacaoSenha validacao = new ValidacaoSenha();
+        ValidacaoSenhaLogin validacao = new ValidacaoSenhaLogin();
         String senhaValida = "Senha123!";
         assertDoesNotThrow(() -> validacao.validar(new DadosAutenticacao("usuario", senhaValida)));
     }
@@ -20,7 +20,7 @@ class ValidacaoSenhaTest {
     @Test
     @DisplayName("Deve dar erro com senha vazia")
     void deveDarErroComSenhaVazia() {
-        ValidacaoSenha validacao = new ValidacaoSenha();
+        ValidacaoSenhaLogin validacao = new ValidacaoSenhaLogin();
         String senhaValida = "";
         assertThrows(IllegalArgumentException.class, () -> validacao.validar(new DadosAutenticacao("usuario", "")));
     }
@@ -28,7 +28,7 @@ class ValidacaoSenhaTest {
     @Test
     @DisplayName("Deve dar erro com senha sem número")
     void deveDarErroComSenhaSemNumero() {
-        ValidacaoSenha validacao = new ValidacaoSenha();
+        ValidacaoSenhaLogin validacao = new ValidacaoSenhaLogin();
         String senhaInvalida = "senhatop!";
         assertThrows(IllegalArgumentException.class, () -> validacao.validar(new DadosAutenticacao("usuario", senhaInvalida)));
     }
@@ -36,7 +36,7 @@ class ValidacaoSenhaTest {
     @Test
     @DisplayName("Deve dar erro com senha sem letra")
     void deveDarErroComSenhaSemLetra() {
-        ValidacaoSenha validacao = new ValidacaoSenha();
+        ValidacaoSenhaLogin validacao = new ValidacaoSenhaLogin();
         String senhaInvalida = "1234567!";
         assertThrows(IllegalArgumentException.class, () -> validacao.validar(new DadosAutenticacao("usuario", senhaInvalida)));
     }
@@ -44,7 +44,7 @@ class ValidacaoSenhaTest {
     @Test
     @DisplayName("Deve dar erro com senha sem caractere especial")
     void deveDarErroComSenhaSemCaractereEspecial() {
-        ValidacaoSenha validacao = new ValidacaoSenha();
+        ValidacaoSenhaLogin validacao = new ValidacaoSenhaLogin();
         String senhaInvalida = "senhatop";
         assertThrows(IllegalArgumentException.class, () -> validacao.validar(new DadosAutenticacao("usuario", senhaInvalida)));
     }
@@ -52,7 +52,7 @@ class ValidacaoSenhaTest {
     @Test
     @DisplayName("Deve dar erro com senha menor que 8 caracteres")
     void deveDarErroComSenhaMenosDe8Caracteres() {
-        ValidacaoSenha validacao = new ValidacaoSenha();
+        ValidacaoSenhaLogin validacao = new ValidacaoSenhaLogin();
         String senhaInvalida = "senhato";
         assertThrows(IllegalArgumentException.class, () -> validacao.validar(new DadosAutenticacao("usuario", senhaInvalida)));
     }

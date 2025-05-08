@@ -4,7 +4,7 @@ import easytime.bff.api.dto.DadosAutenticacao;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidacaoUsuario implements ValidacoesLogin {
+public class ValidacaoUsuarioLogin implements ValidacoesLogin {
     public void validar(DadosAutenticacao dto) {
         if(dto.login().isEmpty() || dto.login().isBlank()) {
             throw new RuntimeException("O usuario não pode ser vazio");

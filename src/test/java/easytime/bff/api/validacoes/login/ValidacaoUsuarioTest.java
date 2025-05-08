@@ -11,21 +11,21 @@ class ValidacaoUsuarioTest {
 
     @Test
     void deveValidarUsuarioComSucesso() {
-        ValidacaoUsuario validacao = new ValidacaoUsuario();
+        ValidacaoUsuarioLogin validacao = new ValidacaoUsuarioLogin();
         String usuarioValido = "usuario123";
         assertDoesNotThrow(() -> validacao.validar(new DadosAutenticacao(usuarioValido, "senhaValida")));
     }
 
     @Test
     void deveDarErroComUsuarioVazio() {
-        ValidacaoUsuario validacao = new ValidacaoUsuario();
+        ValidacaoUsuarioLogin validacao = new ValidacaoUsuarioLogin();
         String usuarioInvalido = "";
         assertThrows(RuntimeException.class, () -> validacao.validar(new DadosAutenticacao(usuarioInvalido, "senhaValida")));
     }
 
     @Test
     void deveDarErroComUsuarioSemLetras() {
-        ValidacaoUsuario validacao = new ValidacaoUsuario();
+        ValidacaoUsuarioLogin validacao = new ValidacaoUsuarioLogin();
         String usuarioInvalido = "1234567";
         assertThrows(IllegalArgumentException.class, () -> validacao.validar(new DadosAutenticacao(usuarioInvalido, "senhaValida")));
     }
