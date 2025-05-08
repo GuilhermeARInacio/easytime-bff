@@ -37,10 +37,11 @@ public class SenhaController {
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> redefinirSenha(@RequestBody CodigoValidacao codigo, HttpServletRequest request) {
         LOGGER.debug("Redefinindo senha para o usuário: {}", codigo.email());
-        if(codigo == null || codigo.email() == null || codigo.senha() == null) {
-            return ResponseEntity.badRequest().body("Preencha todos os campos.");
-        }
         try{
+            if(codigo == null || codigo.email() == null || codigo.senha() == null) {
+                throw new IllegalArgumentException("Preencha todos os campos.");
+            }
+
             ResponseEntity<String> response = service.redefinirSenha(codigo, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){
@@ -59,10 +60,11 @@ public class SenhaController {
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> enviarCodigo(@RequestBody EmailRequest email, HttpServletRequest request) {
         LOGGER.debug("Enviando código para o usuário: {}", email.email());
-        if(email == null || email.email() == null) {
-            return ResponseEntity.badRequest().body("Preencha o email.");
-        }
         try{
+            if(email == null || email.email() == null) {
+                throw new IllegalArgumentException("Preencha todos os campos.");
+            }
+
             ResponseEntity<String> response = service.enviarCodigo(email, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){

@@ -41,11 +41,11 @@ public class AutenticacaoController {
     })
     public ResponseEntity<?> autenticar(@RequestBody DadosAutenticacao dto) {
         LOGGER.debug("Iniciando autenticação para o usuário: {}", dto.login());
-
-        if (dto == null || dto.senha() == null || dto.login() == null) {
-            return ResponseEntity.badRequest().body("Preencha todos os campos.");
-        }
         try {
+            if (dto == null || dto.senha() == null || dto.login() == null) {
+                return ResponseEntity.badRequest().body("Preencha todos os campos.");
+            }
+
             validacoes.forEach(v -> v.validar(dto));
 
             LOGGER.info("Autenticação bem-sucedida para o usuário: {}", dto.login());

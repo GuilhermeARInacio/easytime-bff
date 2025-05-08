@@ -41,10 +41,11 @@ public class UsuarioController {
     public ResponseEntity criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
 
-        if(dto == null || dto.nome() == null || dto.email() == null || dto.login() == null || dto.password() == null || dto.sector() == null || dto.jobTitle() == null || dto.role() == null) {
-            return ResponseEntity.badRequest().body("Preencha todos os campos.");
-        }
         try {
+            if(dto == null || dto.nome() == null || dto.email() == null || dto.login() == null || dto.password() == null || dto.sector() == null || dto.jobTitle() == null || dto.role() == null) {
+                return ResponseEntity.badRequest().body("Preencha todos os campos.");
+            }
+
             validacoes.forEach(v -> v.validar(dto));
 
             LOGGER.debug("Cadastro bem sucedido para o usuário: {}", dto.login());
