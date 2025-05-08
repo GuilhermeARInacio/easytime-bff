@@ -160,7 +160,6 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
         - **400 Bad Request**: Retorna uma mensagem de erro caso não haja um usuário com o ID informado.
         - **403 Forbidden**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
-=======
 ### Health
 **POST** `/health`
 
