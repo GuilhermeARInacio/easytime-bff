@@ -176,6 +176,15 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
         - **400 Bad Request**: Retorna uma mensagem de erro caso um dos campos não tenha sido informado.
         - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
+### Health
+**POST** `/health`
+
+- **Descrição**: Apenas para verificar se o projeto está rodando.
+- **Response**:
+    - **200 OK**: Retorna uma mensagem de boas vindas
+      ```json
+      "Bem-vindo ao EasyTime!"
+      ```
 
 ## Regras de Validação de Senha
 - Não pode estar vazia ou em branco.

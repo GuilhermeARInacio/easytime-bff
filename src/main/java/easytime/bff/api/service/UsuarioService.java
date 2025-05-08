@@ -71,7 +71,7 @@ public class UsuarioService {
 
     public ResponseEntity<String> deletarUsuario(Integer id, HttpServletRequest request) {
         try {
-            if (restTemplate == null) {
+            if (request == null) {
                 restTemplate = new RestTemplate();
             }
             String url = "http://localhost:8080/users/delete/" + id;
