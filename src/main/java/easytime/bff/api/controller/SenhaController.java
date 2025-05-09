@@ -38,7 +38,7 @@ public class SenhaController {
     public ResponseEntity<?> redefinirSenha(@RequestBody CodigoValidacao codigo, HttpServletRequest request) {
         LOGGER.debug("Redefinindo senha para o usuário: {}", codigo.email());
         try{
-            if(codigo == null || codigo.email() == null || codigo.senha() == null || codigo.code() == null) {
+            if(codigo == null || codigo.email() == null || codigo.senha() == null || codigo.code().isBlank() || codigo.code() == null) {
                 throw new IllegalArgumentException("Preencha todos os campos.");
             }
 
