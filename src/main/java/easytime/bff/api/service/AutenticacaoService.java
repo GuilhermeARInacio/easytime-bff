@@ -18,8 +18,8 @@ public class AutenticacaoService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             RestTemplate restTemplate = new RestTemplate();
-            // String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/login";
-            String url = "http://localhost:8080/login";
+            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/login";
+            // String url = "http://localhost:8080/login";
             String response = restTemplate.postForObject(url, usuario, String.class);
 
             return response;

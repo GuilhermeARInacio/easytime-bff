@@ -27,7 +27,8 @@ public class UsuarioService {
                 restTemplate = new RestTemplate();
             }
 
-            String url = "http://localhost:8080/users/create";
+            // String url = "http://localhost:8080/users/create";
+            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/create";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
@@ -42,7 +43,8 @@ public class UsuarioService {
             if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
-            String url = "http://localhost:8080/users/list";
+            // String url = "http://localhost:8080/users/list";
+            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/list";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
@@ -58,7 +60,8 @@ public class UsuarioService {
             if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
-            String url = "http://localhost:8080/users/getById/" + id;
+            // String url = "http://localhost:8080/users/getById/" + id;
+            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/getById/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
@@ -74,7 +77,8 @@ public class UsuarioService {
             if (request == null) {
                 restTemplate = new RestTemplate();
             }
-            String url = "http://localhost:8080/users/delete/" + id;
+            // String url = "http://localhost:8080/users/delete/" + id;
+            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/delete/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers),
