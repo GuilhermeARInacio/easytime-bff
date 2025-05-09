@@ -34,7 +34,7 @@ public class ExceptionHandlerUtil {
 
         if (statusCode.is4xxClientError()) {
             return switch (statusCode.value()) {
-                case 401 -> ResponseEntity.status(statusCode).body("Usuário não autorizado.");
+                case 401 -> ResponseEntity.status(statusCode).body(mensagem != null ? mensagem : "Usuário não autorizado.");
                 case 404 -> ResponseEntity.status(statusCode).body(mensagem != null ? mensagem : "Serviço não encontrado.");
                 default -> ResponseEntity.status(statusCode).body(e.getResponseBodyAsString());
             };
