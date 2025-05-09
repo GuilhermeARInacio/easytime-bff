@@ -4,6 +4,7 @@ import easytime.bff.api.dto.UsuarioDto;
 import easytime.bff.api.dto.UsuarioRetornoDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +22,16 @@ public class UsuarioService {
 
     private RestTemplate restTemplate;
 
+    @Value("${URL_SRV}")
+    private String urlSrv;
+
     public ResponseEntity<Object> criarUsuario(UsuarioDto dto, HttpServletRequest request) {
         try {
             if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
 
-            // String url = "http://localhost:8080/users/create";
-            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/create";
+            String url = urlSrv + "users/create";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
@@ -43,8 +46,8 @@ public class UsuarioService {
             if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
-            // String url = "http://localhost:8080/users/list";
-            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/list";
+
+            String url = urlSrv + "users/list";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
@@ -60,8 +63,8 @@ public class UsuarioService {
             if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
-            // String url = "http://localhost:8080/users/getById/" + id;
-            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/getById/" + id;
+
+            String url = urlSrv + "users/getById/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
@@ -77,8 +80,8 @@ public class UsuarioService {
             if (request == null) {
                 restTemplate = new RestTemplate();
             }
-            // String url = "http://localhost:8080/users/delete/" + id;
-            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/users/delete/" + id;
+
+            String url = urlSrv + "users/delete/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers),

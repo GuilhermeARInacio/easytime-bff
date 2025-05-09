@@ -5,6 +5,7 @@ import easytime.bff.api.dto.EmailRequest;
 import easytime.bff.api.dto.UsuarioDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,16 @@ public class SenhaService {
 
     private RestTemplate restTemplate;
 
+    @Value("${URL_SRV}")
+    private String urlSrv;
+
     public ResponseEntity<String> redefinirSenha(CodigoValidacao codigo, HttpServletRequest request) {
         try {
             if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
-            // String url = "http://localhost:8080/redefine-senha";
-            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/redefine-senha";
+
+            String url = urlSrv + "redefine-senha";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             HttpEntity<CodigoValidacao> entity = new HttpEntity<>(codigo, headers);
@@ -39,8 +43,8 @@ public class SenhaService {
             if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
-            // String url = "http://localhost:8080/send-email";
-            String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/send-email";
+
+            String url = urlSrv + "send-email";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             HttpEntity<EmailRequest> entity = new HttpEntity<>(email, headers);

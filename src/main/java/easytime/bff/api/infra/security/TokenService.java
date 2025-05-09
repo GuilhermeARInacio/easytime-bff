@@ -12,7 +12,7 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    @Value("${JWT_SECRET:12345678}")
+    @Value("${JWT_SECRET}")
     private String secret;
 
     public boolean validate(String tokenJWT) {
