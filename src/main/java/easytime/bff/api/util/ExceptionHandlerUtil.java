@@ -29,13 +29,14 @@ public class ExceptionHandlerUtil {
 
     private static ResponseEntity<?> tratarHttpClientErrorException(HttpClientErrorException e, Logger logger) {
         var statusCode = e.getStatusCode();
-        var mensagem = e.getMessage();
+        var mensagem401 = e.getMessage().contains("codigo") ? "Tente enviar um novo código, ocorreu um erro pois o código está inválido." : "Usuário não autorizado.";
+
         logger.warn("Erro HTTP: {} - {}", statusCode.value(), e.getMessage());
 
         if (statusCode.is4xxClientError()) {
             return switch (statusCode.value()) {
-                case 401 -> ResponseEntity.status(statusCode).body(mensagem != null ? mensagem : "Usuário não autorizado.");
-                case 404 -> ResponseEntity.status(statusCode).body(mensagem != null ? mensagem : "Serviço não encontrado.");
+                case 401 -> ResponseEntity.status(statusCode).body(mensagem401);
+                case 404 -> ResponseEntity.status(statusCode).body("Serviço não encontrado.");
                 default -> ResponseEntity.status(statusCode).body(e.getResponseBodyAsString());
             };
         } else if (statusCode.is5xxServerError()) {
