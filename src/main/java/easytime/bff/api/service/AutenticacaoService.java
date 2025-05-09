@@ -15,7 +15,7 @@ public class AutenticacaoService {
 
     private ValidacaoUsuarioLogin validacoes;
 
-    @Value("${URL_SRV}")
+    @Value("${url.srv}")
     private String urlSrv;
 
     public String autenticar(DadosAutenticacao usuario) throws HttpMessageNotReadableException {

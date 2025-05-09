@@ -19,7 +19,7 @@ public class SenhaService {
 
     private RestTemplate restTemplate;
 
-    @Value("${URL_SRV}")
+    @Value("${url.srv}")
     private String urlSrv;
 
     public ResponseEntity<String> redefinirSenha(CodigoValidacao codigo, HttpServletRequest request) {

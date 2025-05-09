@@ -22,7 +22,7 @@ public class UsuarioService {
 
     private RestTemplate restTemplate;
 
-    @Value("${URL_SRV}")
+    @Value("${url.srv}")
     private String urlSrv;
 
     public ResponseEntity<Object> criarUsuario(UsuarioDto dto, HttpServletRequest request) {
