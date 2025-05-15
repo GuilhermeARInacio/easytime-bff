@@ -1,7 +1,7 @@
 package easytime.bff.api.service;
 
-import easytime.bff.api.dto.UsuarioDto;
-import easytime.bff.api.dto.UsuarioRetornoDto;
+import easytime.bff.api.dto.usuario.UsuarioDto;
+import easytime.bff.api.dto.usuario.UsuarioRetornoDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +77,7 @@ public class UsuarioService {
 
     public ResponseEntity<String> deletarUsuario(Integer id, HttpServletRequest request) {
         try {
-            if (request == null) {
+            if (restTemplate == null) {
                 restTemplate = new RestTemplate();
             }
 

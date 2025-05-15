@@ -1,7 +1,7 @@
 package easytime.bff.api.controller;
 
-import easytime.bff.api.dto.UsuarioDto;
-import easytime.bff.api.dto.UsuarioRetornoDto;
+import easytime.bff.api.dto.usuario.UsuarioDto;
+import easytime.bff.api.dto.usuario.UsuarioRetornoDto;
 import easytime.bff.api.service.UsuarioService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import easytime.bff.api.validacoes.cadastro.ValidacoesCadastro;

@@ -1,7 +1,7 @@
 package easytime.bff.api.controller;
 
-import easytime.bff.api.dto.UsuarioDto;
-import easytime.bff.api.dto.UsuarioRetornoDto;
+import easytime.bff.api.dto.usuario.UsuarioDto;
+import easytime.bff.api.dto.usuario.UsuarioRetornoDto;
 import easytime.bff.api.infra.security.SecurityFilter;
 import easytime.bff.api.infra.security.TokenService;
 import easytime.bff.api.service.UsuarioService;
@@ -27,7 +27,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.config.http.MatcherType.mvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 

@@ -1,6 +1,6 @@
 package easytime.bff.api.service;
 
-import easytime.bff.api.dto.DadosAutenticacao;
+import easytime.bff.api.dto.usuario.DadosAutenticacao;
 
 import easytime.bff.api.validacoes.login.ValidacaoUsuarioLogin;
 import org.springframework.beans.factory.annotation.Value;

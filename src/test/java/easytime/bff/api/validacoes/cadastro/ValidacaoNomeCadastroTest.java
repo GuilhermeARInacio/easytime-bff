@@ -1,6 +1,6 @@
 package easytime.bff.api.validacoes.cadastro;
 
-import easytime.bff.api.dto.UsuarioDto;
+import easytime.bff.api.dto.usuario.UsuarioDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

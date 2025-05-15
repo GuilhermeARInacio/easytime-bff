@@ -1,13 +1,8 @@
 package easytime.bff.api.controller;
 
-import easytime.bff.api.dto.CodigoValidacao;
-import easytime.bff.api.dto.EmailRequest;
-import easytime.bff.api.dto.UsuarioDto;
-import easytime.bff.api.dto.UsuarioRetornoDto;
-import easytime.bff.api.infra.security.SecurityFilter;
-import easytime.bff.api.infra.security.TokenService;
+import easytime.bff.api.dto.senha.CodigoValidacao;
+import easytime.bff.api.dto.senha.EmailRequest;
 import easytime.bff.api.service.SenhaService;
-import easytime.bff.api.validacoes.cadastro.ValidacoesCadastro;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,9 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

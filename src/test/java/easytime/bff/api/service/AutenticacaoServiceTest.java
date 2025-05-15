@@ -1,6 +1,6 @@
 package easytime.bff.api.service;
 
-import easytime.bff.api.dto.DadosAutenticacao;
+import easytime.bff.api.dto.usuario.DadosAutenticacao;
 import easytime.bff.api.validacoes.login.ValidacoesLogin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

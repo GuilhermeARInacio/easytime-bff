@@ -1,7 +1,7 @@
 package easytime.bff.api.service;
 
-import easytime.bff.api.dto.UsuarioDto;
-import easytime.bff.api.dto.UsuarioRetornoDto;
+import easytime.bff.api.dto.usuario.UsuarioDto;
+import easytime.bff.api.dto.usuario.UsuarioRetornoDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
