@@ -1,4 +1,4 @@
-package easytime.bff.api.dto;
+package easytime.bff.api.dto.usuario;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

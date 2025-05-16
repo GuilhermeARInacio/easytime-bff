@@ -18,6 +18,10 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
 - **Troca de senha**:
     - Rota para enviar um código de validação para um email válido.
     - Rota para validar o código enviado e permitir a troca de senha.
+- **Batimento de ponto**:
+    - Rota para registrar o batimento de ponto.
+    - Rota para deletar um registro de ponto por ID.
+    - Rota para listar o registro de pontos de acordo com o usuário e um intervalo de dias.
 
 ## Tecnologias Utilizadas
 - **Java 17**
@@ -36,6 +40,16 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
 - `src/main/java/easytime/bff/api/util`: Contém utilitários e classes auxiliares.
 
 ## Endpoints
+
+### Health
+**POST** `/health`
+
+- **Descrição**: Apenas para verificar se o projeto está rodando.
+- **Response**:
+    - **200 OK**: Retorna uma mensagem de boas vindas
+      ```json
+      "Bem-vindo ao EasyTime!"
+      ```
 
 ### Login
 **POST** `/login`
@@ -176,15 +190,35 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
         - **400 Bad Request**: Retorna uma mensagem de erro caso um dos campos não tenha sido informado.
         - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
-### Health
-**POST** `/health`
+### Batimento de ponto
+**POST** `/ponto`
+- **Descrição**: Faz o registro do ponto no horário e data atual.
+    - **Request Body**:
+    ```json
+    {
+      "login": "string"
+    }
+    ```
+    - **Response**:
+      - **200 OK**: Retorna uma mensagem de sucesso e o registro do ponto.
+          ```json
+          {
+            "login": "string",
+            "data": "2025-01-01",
+            "horarioBatida": "08:00:00",
+            "status": "PENDENTE"
+          }
+        ```
+        - **400 Bad Request**: Retorna uma mensagem de erro caso um dos campos não tenha sido informado.
+        - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio ou o usuário invalido não exista.
 
-- **Descrição**: Apenas para verificar se o projeto está rodando.
-- **Response**:
-    - **200 OK**: Retorna uma mensagem de boas vindas
-      ```json
-      "Bem-vindo ao EasyTime!"
-      ```
+### Deletar registro de ponto
+**DELETE** `/ponto/{id}`
+- **Descrição**: Deleta o registro de ponto de acordo com o ID informado.
+    - **Response**:
+        - **200 OK**: Retorna uma mensagem de sucesso.
+        - **400 Bad Request**: Retorna uma mensagem de erro caso o ID informado não exista.
+        - **401 Unauthorized**: Retorna uma mensagem de erro caso o token esteja inválido ou vazio.
 
 ## Regras de Validação de Senha
 - Não pode estar vazia ou em branco.

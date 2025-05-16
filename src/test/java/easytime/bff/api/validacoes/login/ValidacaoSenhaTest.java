@@ -1,6 +1,6 @@
 package easytime.bff.api.validacoes.login;
 
-import easytime.bff.api.dto.DadosAutenticacao;
+import easytime.bff.api.dto.usuario.DadosAutenticacao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

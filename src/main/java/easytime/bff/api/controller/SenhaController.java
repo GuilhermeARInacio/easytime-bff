@@ -1,7 +1,7 @@
 package easytime.bff.api.controller;
 
-import easytime.bff.api.dto.CodigoValidacao;
-import easytime.bff.api.dto.EmailRequest;
+import easytime.bff.api.dto.senha.CodigoValidacao;
+import easytime.bff.api.dto.senha.EmailRequest;
 import easytime.bff.api.service.SenhaService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import io.swagger.v3.oas.annotations.Operation;

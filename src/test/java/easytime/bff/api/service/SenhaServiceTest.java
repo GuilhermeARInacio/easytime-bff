@@ -1,9 +1,8 @@
 package easytime.bff.api.service;
 
-import easytime.bff.api.dto.CodigoValidacao;
-import easytime.bff.api.dto.EmailRequest;
-import easytime.bff.api.dto.UsuarioDto;
-import easytime.bff.api.dto.UsuarioRetornoDto;
+import easytime.bff.api.dto.senha.CodigoValidacao;
+import easytime.bff.api.dto.senha.EmailRequest;
+import easytime.bff.api.dto.usuario.UsuarioDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,19 +14,16 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpMethod.GET;
 
 @SpringBootTest
 @AutoConfigureMockMvc

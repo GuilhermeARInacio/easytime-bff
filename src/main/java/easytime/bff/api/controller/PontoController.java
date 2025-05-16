@@ -1,0 +1,66 @@
+package easytime.bff.api.controller;
+
+import easytime.bff.api.dto.usuario.LoginDto;
+import easytime.bff.api.service.PontoService;
+import easytime.bff.api.util.ExceptionHandlerUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RestController
+@RequestMapping("/ponto")
+public class PontoController {
+
+    @Autowired
+    private PontoService service;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PontoController.class);
+
+    @PostMapping
+    @Operation(summary = "Registrar ponto", description = "Registra o ponto do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Batimento de ponto registrado com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> registrarPonto(@NotBlank @NotNull @RequestBody LoginDto login, HttpServletRequest request) {
+        LOGGER.debug("Registrando ponto para o usuário: {}", login.login());
+        try {
+            ResponseEntity<?> response = service.registrarPonto(login, request);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            LOGGER.error("Erro ao registrar ponto para o usuário: {}", login.login(), e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar ponto", description = "Deleta o ponto de acordo com o id informado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Exclusão do ponto realizada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> excluirPonto(@NotNull @PathVariable Integer id, HttpServletRequest request) {
+        LOGGER.debug("Deletando resgistro de ponto com o id: {}", id);
+        try {
+            ResponseEntity<?> response = service.deletarPonto(id, request);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            LOGGER.error("Erro ao deletar ponto com o id: {}", id, e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+}
