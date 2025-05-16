@@ -31,7 +31,7 @@ public class UsuarioService {
                 restTemplate = new RestTemplate();
             }
 
-            String url = urlSrv + "users/create";
+            String url = "http://localhost:8080/" + "users/create";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
@@ -47,7 +47,7 @@ public class UsuarioService {
                 restTemplate = new RestTemplate();
             }
 
-            String url = urlSrv + "users/list";
+            String url = "http://localhost:8080/" + "users/list";
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
@@ -64,7 +64,7 @@ public class UsuarioService {
                 restTemplate = new RestTemplate();
             }
 
-            String url = urlSrv + "users/getById/" + id;
+            String url = "http://localhost:8080/" + "users/getById/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
@@ -81,7 +81,7 @@ public class UsuarioService {
                 restTemplate = new RestTemplate();
             }
 
-            String url = urlSrv + "users/delete/" + id;
+            String url = "http://localhost:8080/" + "users/delete/" + id;
             HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
             return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers),

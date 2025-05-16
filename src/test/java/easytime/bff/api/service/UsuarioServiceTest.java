@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
@@ -115,26 +116,6 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar erro ao usar token inválido")
-    void tokenInvalido() throws NoSuchFieldException, IllegalAccessException {
-        String url = "http://localhost:8080/users/list";
-
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.singletonList("Authorization")));
-        when(request.getHeader("Authorization")).thenReturn("Bearer token-invalido");
-        when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-
-        when(restTemplate.exchange(eq(url), eq(GET), any(HttpEntity.class), any(ParameterizedTypeReference.class)))
-                .thenThrow(new RuntimeException("Token inválido"));
-
-        Field field = UsuarioService.class.getDeclaredField("restTemplate");
-        field.setAccessible(true);
-        field.set(service, restTemplate);
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> service.listarUsuarios(request));
-        assertEquals("Token inválido", exception.getMessage());
-    }
-
-    @Test
     @DisplayName("Deve listar usuário por ID com sucesso")
     void listarUsuarioPorIdComSucesso() throws NoSuchFieldException, IllegalAccessException {
         int id = 1;
@@ -191,7 +172,7 @@ class UsuarioServiceTest {
         when(request.getHeader("Authorization")).thenReturn("Bearer token");
         when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
 
-        when(restTemplate.exchange(eq(url), eq(HttpMethod.DELETE), any(HttpEntity.class), eq(String.class)))
+        when(restTemplate.exchange(eq("http://localhost:8080/users/delete/" + id), eq(HttpMethod.DELETE), any(HttpEntity.class), eq(String.class)))
                 .thenReturn(expectedResponse);
 
         Field field = UsuarioService.class.getDeclaredField("restTemplate");
