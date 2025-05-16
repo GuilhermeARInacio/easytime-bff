@@ -17,39 +17,25 @@ import static org.springframework.http.HttpMethod.POST;
 @Service
 public class PontoService {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${url.srv}")
     private String urlSrv;
 
     public ResponseEntity<?> registrarPonto(LoginDto login, HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
 
-            String url = urlSrv + "ponto";
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        String url = urlSrv + "ponto";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            HttpEntity<LoginDto> entity = new HttpEntity<>(login, headers);
-            return restTemplate.exchange(url, POST, entity, TimeLogDto.class);
-        } catch (Exception e) {
-            throw e;
-        }
+        HttpEntity<LoginDto> entity = new HttpEntity<>(login, headers);
+        return restTemplate.exchange(url, POST, entity, TimeLogDto.class);
     }
 
     public ResponseEntity<?> deletarPonto(Integer id, HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
 
-            String url = urlSrv + "ponto/" + id;
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        String url = urlSrv + "ponto/" + id;
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), String.class);
-        } catch (Exception e) {
-            throw e;
-        }
+        return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), String.class);
     }
 }

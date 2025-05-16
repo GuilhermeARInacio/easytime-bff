@@ -16,40 +16,26 @@ import static org.springframework.http.HttpMethod.POST;
 @Service
 public class SenhaService {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${url.srv}")
     private String urlSrv;
 
     public ResponseEntity<String> redefinirSenha(CodigoValidacao codigo, HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
 
-            String url = urlSrv + "redefine-senha";
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        String url = urlSrv + "redefine-senha";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            HttpEntity<CodigoValidacao> entity = new HttpEntity<>(codigo, headers);
-            return restTemplate.exchange(url, POST, entity, String.class);
-        } catch (Exception e) {
-            throw e;
-        }
+        HttpEntity<CodigoValidacao> entity = new HttpEntity<>(codigo, headers);
+        return restTemplate.exchange(url, POST, entity, String.class);
     }
 
     public ResponseEntity<String> enviarCodigo(EmailRequest email, HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
 
-            String url = urlSrv + "send-email";
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        String url = urlSrv + "send-email";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            HttpEntity<EmailRequest> entity = new HttpEntity<>(email, headers);
-            return restTemplate.exchange(url, POST, entity, String.class);
-        } catch (Exception e) {
-            throw e;
-        }
+        HttpEntity<EmailRequest> entity = new HttpEntity<>(email, headers);
+        return restTemplate.exchange(url, POST, entity, String.class);
     }
 }

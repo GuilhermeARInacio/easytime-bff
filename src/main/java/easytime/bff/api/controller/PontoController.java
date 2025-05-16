@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +34,10 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> registrarPonto(@RequestBody LoginDto login, HttpServletRequest request) {
+    public ResponseEntity registrarPonto(@NotBlank @NotNull @RequestBody LoginDto login, HttpServletRequest request) {
         LOGGER.debug("Registrando ponto para o usuário: {}", login.login());
         try {
-            if (login == null || login.login() == null || login.login().isBlank()) {
+            if (login.login() == null || login.login().isBlank()) {
                 throw new IllegalArgumentException("Preencha todos os campos.");
             }
 
