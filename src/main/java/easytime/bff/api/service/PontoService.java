@@ -1,7 +1,6 @@
 package easytime.bff.api.service;
 
 import easytime.bff.api.dto.usuario.LoginDto;
-import easytime.bff.api.dto.pontos.TimeLogDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;

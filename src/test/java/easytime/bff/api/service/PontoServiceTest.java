@@ -78,7 +78,6 @@ class PontoServiceTest {
     void testRegistrarPonto() {
         // Arrange
         LoginDto loginDto = new LoginDto("user123");
-        String url = "http://localhost:8080/ponto";
         TimeLogDto timeLogDto = new TimeLogDto("", LocalDate.now(), Time.valueOf(LocalTime.now()), Status.PENDENTE);
 
         HttpEntity<LoginDto> entity = new HttpEntity<>(Mockito.mock(LoginDto.class), headers);
