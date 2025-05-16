@@ -73,7 +73,8 @@ class UsuarioControllerTest {
         when(dto.sector()).thenReturn("sector");
         when(dto.jobTitle()).thenReturn("jobTitle");
         when(dto.role()).thenReturn("role");
-        when(service.criarUsuario(dto, request)).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(dto));
+        when(service.criarUsuario(dto, request))
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(dto));
 
         ResponseEntity<?> response = controller.criarUsuario(dto, request);
 

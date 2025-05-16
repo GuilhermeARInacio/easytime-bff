@@ -22,20 +22,20 @@ public class PontoService {
     @Value("${url.srv}")
     private String urlSrv;
 
-    public ResponseEntity<?> registrarPonto(LoginDto login, HttpServletRequest request) {
+    public ResponseEntity<Object> registrarPonto(LoginDto login, HttpServletRequest request) {
 
         String url = urlSrv + "ponto";
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         HttpEntity<LoginDto> entity = new HttpEntity<>(login, headers);
-        return restTemplate.exchange(url, POST, entity, TimeLogDto.class);
+        return restTemplate.exchange(url, POST, entity, Object.class);
     }
 
-    public ResponseEntity<?> deletarPonto(Integer id, HttpServletRequest request) {
+    public ResponseEntity<Object> deletarPonto(Integer id, HttpServletRequest request) {
 
         String url = urlSrv + "ponto/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-        return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), String.class);
+        return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), Object.class);
     }
 }

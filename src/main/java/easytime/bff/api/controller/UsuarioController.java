@@ -38,11 +38,11 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Formato dos campos inválido"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
-    public ResponseEntity criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
+    public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
 
         try {
-            if(dto == null || dto.nome() == null || dto.email() == null || dto.login() == null || dto.password() == null || dto.sector() == null || dto.jobTitle() == null || dto.role() == null) {
+            if(dto.nome() == null || dto.email() == null || dto.login() == null || dto.password() == null || dto.sector() == null || dto.jobTitle() == null || dto.role() == null) {
                 return ResponseEntity.badRequest().body("Preencha todos os campos.");
             }
 

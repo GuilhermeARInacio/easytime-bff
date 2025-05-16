@@ -34,13 +34,9 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity registrarPonto(@NotBlank @NotNull @RequestBody LoginDto login, HttpServletRequest request) {
+    public ResponseEntity<?> registrarPonto(@NotBlank @NotNull @RequestBody LoginDto login, HttpServletRequest request) {
         LOGGER.debug("Registrando ponto para o usuário: {}", login.login());
         try {
-            if (login.login() == null || login.login().isBlank()) {
-                throw new IllegalArgumentException("Preencha todos os campos.");
-            }
-
             ResponseEntity<?> response = service.registrarPonto(login, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
@@ -56,7 +52,7 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> excluirPonto(@PathVariable Integer id, HttpServletRequest request) {
+    public ResponseEntity<?> excluirPonto(@NotNull @PathVariable Integer id, HttpServletRequest request) {
         LOGGER.debug("Deletando resgistro de ponto com o id: {}", id);
         try {
             ResponseEntity<?> response = service.deletarPonto(id, request);
