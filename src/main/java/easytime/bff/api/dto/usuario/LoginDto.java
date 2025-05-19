@@ -1,6 +1,7 @@
 package easytime.bff.api.dto.usuario;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public record LoginDto (@NotBlank String login){
+public record LoginDto (@NotNull @NotBlank String login){
 }

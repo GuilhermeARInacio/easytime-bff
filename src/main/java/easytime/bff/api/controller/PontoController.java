@@ -1,5 +1,6 @@
 package easytime.bff.api.controller;
 
+import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.service.PontoService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -34,7 +36,7 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> registrarPonto(@NotBlank @NotNull @RequestBody LoginDto login, HttpServletRequest request) {
+    public ResponseEntity<?> registrarPonto(@Valid @RequestBody LoginDto login, HttpServletRequest request) {
         LOGGER.debug("Registrando ponto para o usuário: {}", login.login());
         try {
             ResponseEntity<?> response = service.registrarPonto(login, request);
@@ -53,12 +55,25 @@ public class PontoController {
     })
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> excluirPonto(@NotNull @PathVariable Integer id, HttpServletRequest request) {
+        //@NotNull
         LOGGER.debug("Deletando resgistro de ponto com o id: {}", id);
         try {
             ResponseEntity<?> response = service.deletarPonto(id, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             LOGGER.error("Erro ao deletar ponto com o id: {}", id, e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @GetMapping("/consulta")
+    public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
+        LOGGER.debug("Consultando ponto");
+        try {
+            var response = service.consultarPonto(dto, request);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            LOGGER.error("Erro ao consultar ponto", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
