@@ -2,6 +2,7 @@ package easytime.bff.api.controller;
 
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.usuario.LoginDto;
+import easytime.bff.api.infra.exception.InvalidUserException;
 import easytime.bff.api.service.PontoService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Controller
 @RestController
@@ -66,12 +68,26 @@ public class PontoController {
         }
     }
 
-    @GetMapping("/consulta")
+    @PutMapping("/consulta")
+    @Operation(summary = "Listar registro de pontos", description = "Lista os pontos registrados de um usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pontos registrados"),
+            @ApiResponse(responseCode = "404", description = "Sem registro de pontos para o periodo informado"),
+            @ApiResponse(responseCode = "400", description = "Erro ao consultar pontos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado ou usuario não encontrado")
+    })
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
-        LOGGER.debug("Consultando ponto");
+        LOGGER.debug("Consultando pontos do usuario: {}", dto.login());
         try {
             var response = service.consultarPonto(dto, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (HttpClientErrorException.NotFound e){
+            LOGGER.error("Nenhum ponto encontrado", e);
+            return ResponseEntity.status(404).body("Nenhum ponto encontrado.");
+        } catch (HttpClientErrorException.Unauthorized e){
+            LOGGER.error("Usuário não encontrado", e);
+            return ResponseEntity.status(401).body("Usuário não encontrado.");
         } catch (Exception e) {
             LOGGER.error("Erro ao consultar ponto", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);

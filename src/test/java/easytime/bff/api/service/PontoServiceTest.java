@@ -1,5 +1,7 @@
 package easytime.bff.api.service;
 
+import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
+import easytime.bff.api.dto.pontos.RegistroCompletoDto;
 import easytime.bff.api.dto.pontos.Status;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.dto.pontos.TimeLogDto;
@@ -39,12 +41,7 @@ class PontoServiceTest {
     @Mock
     private HttpServletRequest request;
 
-    @Mock
-    private HttpHeaderUtil httpHeaderUtil;
-
     private HttpHeaders headers;
-
-
 
     private MockedStatic<HttpHeaderUtil> mockedStaticHttpHeaderUtil;
 
@@ -83,7 +80,7 @@ class PontoServiceTest {
         HttpEntity<LoginDto> entity = new HttpEntity<>(Mockito.mock(LoginDto.class), headers);
 
         when(HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange("http://localhost:8080/users/create", HttpMethod.POST, entity, Object.class))
+        when(restTemplate.exchange("http://localhost:8080/ponto", HttpMethod.POST, entity, Object.class))
                 .thenReturn(ResponseEntity.ok(timeLogDto));
 
         // Act
@@ -101,11 +98,25 @@ class PontoServiceTest {
         HttpEntity<LoginDto> entity = new HttpEntity<>(Mockito.mock(LoginDto.class), headers);
 
         when(HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange("http://localhost:8080/users/create", HttpMethod.DELETE, entity, Object.class))
+        when(restTemplate.exchange(url, HttpMethod.DELETE, entity, Object.class))
                 .thenReturn(ResponseEntity.ok(""));
 
         // Act
         ResponseEntity<?> response = pontoService.deletarPonto(id, request);
+    }
 
+    @Test
+    @DisplayName("Should successfully consult points")
+    void testConsultarPonto() {
+        // Arrange
+        RegistroCompletoDto dto = Mockito.mock(RegistroCompletoDto.class);
+        HttpEntity<RegistroCompletoDto> entity = new HttpEntity<>(dto, headers);
+
+        when(HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
+        when(restTemplate.exchange("http://localhost:8080/ponto/consulta", HttpMethod.PUT, entity, Object.class))
+                .thenReturn(ResponseEntity.ok(Collections.singletonList(dto)));
+
+        // Act
+        ResponseEntity<?> response = pontoService.consultarPonto(Mockito.mock(ConsultaPontoDTO.class), request);
     }
 }
