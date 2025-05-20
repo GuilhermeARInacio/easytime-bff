@@ -70,7 +70,7 @@ public class PontoController {
 
     @PutMapping("/consulta")
     public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
-        LOGGER.debug("Consultando ponto do usuario: {}", dto.login());
+        LOGGER.debug("Consultando pontos do usuario: {}", dto.login());
         try {
             var response = service.consultarPonto(dto, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
