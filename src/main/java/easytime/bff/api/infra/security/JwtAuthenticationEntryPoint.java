@@ -16,6 +16,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("text/plain");
-        response.getWriter().write("Token inválido ou expirado.");
+        response.getWriter().write("Acesso negado. Faça login para registrar seu ponto.");
     }
 }
