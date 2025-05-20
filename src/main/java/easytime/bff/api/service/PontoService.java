@@ -23,7 +23,6 @@ public class PontoService {
     private String urlSrv;
 
     public ResponseEntity<Object> registrarPonto(LoginDto login, HttpServletRequest request) {
-
         String url = urlSrv + "ponto";
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
@@ -32,7 +31,6 @@ public class PontoService {
     }
 
     public ResponseEntity<Object> deletarPonto(Integer id, HttpServletRequest request) {
-
         String url = urlSrv + "ponto/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
