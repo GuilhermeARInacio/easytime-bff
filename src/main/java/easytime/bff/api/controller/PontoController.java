@@ -2,6 +2,7 @@ package easytime.bff.api.controller;
 
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.usuario.LoginDto;
+import easytime.bff.api.infra.exception.InvalidUserException;
 import easytime.bff.api.service.PontoService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Controller
 @RestController
@@ -66,12 +68,18 @@ public class PontoController {
         }
     }
 
-    @GetMapping("/consulta")
+    @PutMapping("/consulta")
     public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
-        LOGGER.debug("Consultando ponto");
+        LOGGER.debug("Consultando ponto do usuario: {}", dto.login());
         try {
             var response = service.consultarPonto(dto, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (HttpClientErrorException.NotFound e){
+            LOGGER.error("Nenhum ponto encontrado", e);
+            return ResponseEntity.status(404).body("Nenhum ponto encontrado.");
+        } catch (HttpClientErrorException.Unauthorized e){
+            LOGGER.error("Usuário não encontrado", e);
+            return ResponseEntity.status(401).body("Usuário não encontrado.");
         } catch (Exception e) {
             LOGGER.error("Erro ao consultar ponto", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);

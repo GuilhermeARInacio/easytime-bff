@@ -40,13 +40,10 @@ public class PontoService {
     }
 
     public ResponseEntity<Object> consultarPonto(ConsultaPontoDTO dto, HttpServletRequest request) {
-
         String url = urlSrv + "ponto/consulta";
-
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-
         HttpEntity<ConsultaPontoDTO> entity = new HttpEntity<>(dto, headers);
 
-        return restTemplate.exchange(url, GET, new HttpEntity<>(headers), Object.class);
+        return restTemplate.exchange(url, PUT, entity, Object.class);
     }
 }
