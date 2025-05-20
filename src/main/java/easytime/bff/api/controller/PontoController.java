@@ -69,6 +69,14 @@ public class PontoController {
     }
 
     @PutMapping("/consulta")
+    @Operation(summary = "Listar registro de pontos", description = "Lista os pontos registrados de um usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pontos registrados"),
+            @ApiResponse(responseCode = "404", description = "Sem registro de pontos para o periodo informado"),
+            @ApiResponse(responseCode = "400", description = "Erro ao consultar pontos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado ou usuario não encontrado")
+    })
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
         LOGGER.debug("Consultando pontos do usuario: {}", dto.login());
         try {
