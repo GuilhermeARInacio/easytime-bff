@@ -20,75 +20,40 @@ import static org.springframework.http.HttpMethod.*;
 @Service
 public class UsuarioService {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${url.srv}")
     private String urlSrv;
 
     public ResponseEntity<Object> criarUsuario(UsuarioDto dto, HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
+        String url = urlSrv + "users/create";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            String url = "http://localhost:8080/" + "users/create";
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-
-            HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
-            return restTemplate.exchange(url, PUT, entity, Object.class);
-        } catch (Exception e) {
-            throw e;
-        }
+        HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
+        return restTemplate.exchange(url, PUT, entity, Object.class);
     }
 
     public ResponseEntity<List<UsuarioRetornoDto>> listarUsuarios(HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
+        String url = urlSrv + "users/list";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            String url = "http://localhost:8080/" + "users/list";
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-
-            return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
-                    new ParameterizedTypeReference<List<UsuarioRetornoDto>>() {});
-
-        } catch (Exception e) {
-            throw e;
-        }
+        return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
+                new ParameterizedTypeReference<List<UsuarioRetornoDto>>() {});
     }
 
     public ResponseEntity<UsuarioRetornoDto> listarUsuarioPorId(Integer id, HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
+        String url = urlSrv + "users/getById/" + id;
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            String url = "http://localhost:8080/" + "users/getById/" + id;
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-
-            return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
-                    UsuarioRetornoDto.class);
-
-        } catch (Exception e) {
-            throw e;
-        }
+        return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
+                UsuarioRetornoDto.class);
     }
 
     public ResponseEntity<String> deletarUsuario(Integer id, HttpServletRequest request) {
-        try {
-            if (restTemplate == null) {
-                restTemplate = new RestTemplate();
-            }
+        String url = urlSrv + "users/delete/" + id;
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-            String url = "http://localhost:8080/" + "users/delete/" + id;
-            HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-
-            return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers),
-                    String.class);
-
-        } catch (Exception e) {
-            throw e;
-        }
+        return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers),
+                String.class);
     }
 }

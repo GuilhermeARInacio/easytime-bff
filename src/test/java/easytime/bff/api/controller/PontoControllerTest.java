@@ -1,6 +1,7 @@
 package easytime.bff.api.controller;
 
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
+import easytime.bff.api.dto.pontos.RegistroCompletoDto;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.service.PontoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,10 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -89,8 +93,8 @@ class PontoControllerTest {
     void testConsultaPonto_Success() {
         ConsultaPontoDTO dto = new ConsultaPontoDTO("user", "2023-01-01", "2023-01-31");
 
-        when(pontoService.consultarPonto(any(), any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(""));
+        when(pontoService.consultarPonto(dto, request))
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(Mockito.mock(RegistroCompletoDto.class))));
 
         // Act
         var response = pontoController.consultaPonto(dto, request);
