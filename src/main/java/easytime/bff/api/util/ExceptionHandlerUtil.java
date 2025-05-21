@@ -15,7 +15,7 @@ public class ExceptionHandlerUtil {
             return ResponseEntity.badRequest().body(e.getMessage() != null ? e.getMessage() : "Erro de validação nos campos fornecidos.");
         } else if (e instanceof RuntimeException) {
             int statusCode = 400;
-            if(e.getMessage().contains("404")){
+            if(e.getMessage().contains("404") && e.getMessage().contains("Usuário")) {
                 statusCode = 404;
                 return ResponseEntity.status(statusCode).body("Usuário não encontrado.");
             }
