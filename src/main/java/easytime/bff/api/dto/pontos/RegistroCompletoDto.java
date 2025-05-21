@@ -1,5 +1,7 @@
 package easytime.bff.api.dto.pontos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -16,6 +18,8 @@ public record RegistroCompletoDto (
         Time saida3,
         Status status
 ){
-
-
+    @JsonProperty("horasTrabalhadas")
+    public double horasTrabalhadasEmHoras() {
+        return horasTrabalhadas == null ? 0 : horasTrabalhadas.toMinutes() / 60.0;
+    }
 }
