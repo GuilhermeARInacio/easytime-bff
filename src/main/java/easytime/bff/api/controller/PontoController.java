@@ -53,15 +53,18 @@ public class PontoController {
     @Operation(summary = "Deletar ponto", description = "Deleta o ponto de acordo com o id informado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Exclusão do ponto realizada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Ponto não encontrado"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> excluirPonto(@NotNull @PathVariable Integer id, HttpServletRequest request) {
-        //@NotNull
+    public ResponseEntity<?> excluirPonto(@PathVariable Integer id, HttpServletRequest request) {
         LOGGER.debug("Deletando resgistro de ponto com o id: {}", id);
         try {
             ResponseEntity<?> response = service.deletarPonto(id, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (HttpClientErrorException.NotFound e) {
+            LOGGER.error("Ponto não encontrado com o id: {}", id, e);
+            return ResponseEntity.status(404).body("Ponto não encontrado.");
         } catch (Exception e) {
             LOGGER.error("Erro ao deletar ponto com o id: {}", id, e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);

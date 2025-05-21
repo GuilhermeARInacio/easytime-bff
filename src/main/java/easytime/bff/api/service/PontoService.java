@@ -34,11 +34,11 @@ public class PontoService {
         return restTemplate.exchange(url, POST, entity, Object.class);
     }
 
-    public ResponseEntity<Object> deletarPonto(Integer id, HttpServletRequest request) {
+    public ResponseEntity<String> deletarPonto(Integer id, HttpServletRequest request) {
         String url = urlSrv + "ponto/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-        return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), Object.class);
+        return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), String.class);
     }
 
     public ResponseEntity<List<RegistroCompletoDto>> consultarPonto(ConsultaPontoDTO dto, HttpServletRequest request) {
