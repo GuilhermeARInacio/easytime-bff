@@ -263,6 +263,41 @@ O projeto foi desenvolvido em **Java** utilizando o framework **Spring Boot** e 
             - **404 Bad Request**: Retorna uma mensagem de erro quando não há registros no período.
             - **401 Unauthorized**: Retorna uma mensagem de erro quando o usuário não está autenticado ou login não existe.
 
+### Alterar registro de ponto
+**PUT** `/ponto/alterar`
+- **Descrição**: Realiza a alteração do ponto do usuário.
+    - **Request Body**:
+      ```json
+      {
+          "login": "string",
+          "idPonto": 1,
+          "data": "2025-01-01",
+          "entrada1": "08:00:00",
+          "saida1": "12:00:00",
+          "entrada2": "13:00:00",
+          "saida2": "17:00:00",
+          "entrada3": null,
+          "saida3": null
+      }
+      ```
+        - **Response**:
+            - **200 OK**: Retorna o ponto alterado.
+              ```json
+              {
+                  "id": 7,
+                  "data": "2025-01-01",
+                  "entrada1": "08:00:00",
+                  "saida1": "12:00:00",
+                  "entrada2": "13:00:00",
+                  "saida2": "17:00:00",
+                  "entrada3": null,
+                  "saida3": null,
+                  "status": "PENDENTE"
+              }
+              ```
+            - **400 Bad Request**: Retorna uma mensagem de erro quando os campos estão inválidos.
+            - **401 Unauthorized**: Retorna uma mensagem de erro quando o usuário não está autenticado.
+
 ## Regras de Validação de Senha
 - Não pode estar vazia ou em branco.
 - Deve ter no mínimo 8 caracteres.
