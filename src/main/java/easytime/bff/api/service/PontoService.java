@@ -41,12 +41,12 @@ public class PontoService {
         return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), String.class);
     }
 
-    public ResponseEntity<List<Object>> consultarPonto(ConsultaPontoDTO dto, HttpServletRequest request) {
+    public ResponseEntity<List<RegistroCompletoDto>> consultarPonto(ConsultaPontoDTO dto, HttpServletRequest request) {
         String url = urlSrv + "ponto/consulta";
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
         HttpEntity<ConsultaPontoDTO> entity = new HttpEntity<>(dto, headers);
 
         return restTemplate.exchange(url, PUT, entity,
-                new ParameterizedTypeReference<List<Object>>() {});
+                new ParameterizedTypeReference<List<RegistroCompletoDto>>() {});
     }
 }
