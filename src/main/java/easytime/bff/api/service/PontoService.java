@@ -23,7 +23,7 @@ public class PontoService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${SRV_URL")
+    @Value("${SRV_URL}")
     private String urlSrv;
 
     public ResponseEntity<Object> registrarPonto(LoginDto login, HttpServletRequest request) {
