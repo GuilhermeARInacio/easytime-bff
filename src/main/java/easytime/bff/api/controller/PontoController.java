@@ -84,7 +84,7 @@ public class PontoController {
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> consultaPonto(@RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
         LOGGER.debug("Consultando pontos do usuário: {}", dto.login());
-        if(dto.dtInicio() == null || dto.dtFinal() == null || dto.login() == null){
+        if(dto.dtInicio() == null || dto.dtFinal() == null || dto.login() == null || dto.login().isBlank() || dto.dtInicio().isBlank() || dto.dtFinal().isBlank()){
             LOGGER.error("Dados inválidos para consulta de pontos");
             return ResponseEntity.status(400).body("Todos os campos devem ser preenchidos!");
         }
