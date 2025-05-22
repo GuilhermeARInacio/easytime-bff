@@ -86,7 +86,7 @@ public class PontoController {
         LOGGER.debug("Consultando pontos do usuário: {}", dto.login());
         try {
             var response = service.consultarPonto(dto, request);
-            LOGGER.debug("Consulta de pontos bem sucedida do usuário: {}", dto.login());
+            LOGGER.info("Consulta de pontos bem sucedida do usuário: {}", dto.login());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpClientErrorException.NotFound e){
             LOGGER.error("Nenhum ponto encontrado", e);
