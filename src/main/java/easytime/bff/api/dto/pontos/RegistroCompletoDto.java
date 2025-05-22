@@ -9,7 +9,6 @@ import java.time.LocalDate;
 public record RegistroCompletoDto (
         Integer id,
         LocalDate data,
-        Duration horasTrabalhadas,
         Time entrada1,
         Time saida1,
         Time entrada2,
