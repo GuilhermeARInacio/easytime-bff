@@ -1,11 +1,14 @@
 package easytime.bff.api.service;
 
+import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.pontos.RegistroCompletoDto;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.util.HttpHeaderUtil;
+import easytime.bff.api.validacoes.alterar_ponto.ValidacaoAlterarPonto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -25,6 +28,9 @@ public class PontoService {
 
     @Value("${SRV_URL}")
     private String urlSrv;
+
+    @Autowired
+    private List<ValidacaoAlterarPonto> validacoes;
 
     public ResponseEntity<Object> registrarPonto(LoginDto login, HttpServletRequest request) {
         String url = urlSrv + "ponto";
@@ -48,5 +54,15 @@ public class PontoService {
 
         return restTemplate.exchange(url, PUT, entity,
                 new ParameterizedTypeReference<List<RegistroCompletoDto>>() {});
+    }
+
+    public ResponseEntity<RegistroCompletoDto> alterarPonto(AlterarPontoDto dto, HttpServletRequest request) {
+        String url = urlSrv + "ponto/alterar";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        HttpEntity<AlterarPontoDto> entity = new HttpEntity<>(dto, headers);
+
+        validacoes.forEach(validacao -> validacao.validar(dto));
+
+        return restTemplate.exchange(url, PUT, entity, RegistroCompletoDto.class);
     }
 }

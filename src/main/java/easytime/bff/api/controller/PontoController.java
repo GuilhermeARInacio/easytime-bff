@@ -1,5 +1,6 @@
 package easytime.bff.api.controller;
 
+import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.infra.exception.InvalidUserException;
@@ -20,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.time.DateTimeException;
 
 @Controller
 @RestController
@@ -104,5 +107,35 @@ public class PontoController {
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
+
+    @PutMapping("/alterar")
+    @Operation(summary = "Alterar registro de ponto", description = "Altera um registro de ponto do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ponto alterado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "ID informado incorreto"),
+            @ApiResponse(responseCode = "400", description = "Erro campos inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> alterarPonto(@RequestBody AlterarPontoDto dto, HttpServletRequest request) {
+        LOGGER.debug("Alterando ponto do usuário: {}", dto.login());
+        try {
+            ResponseEntity<?> response = service.alterarPonto(dto, request);
+            LOGGER.info("Ponto alterado com sucesso para o usuário: {}", dto.login());
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (HttpClientErrorException.NotFound e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (HttpClientErrorException.Unauthorized e) {
+            return ResponseEntity.status(401).body("Login inválido. Verifique os dados informados.");
+        } catch (DateTimeException e){
+            return ResponseEntity.badRequest().body("Data ou horário inválidos. Verifique os dados informados.");
+        } catch (Exception e) {
+            LOGGER.error("Erro ao alterar ponto para o usuário: {}", dto.login(), e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
 
 }
