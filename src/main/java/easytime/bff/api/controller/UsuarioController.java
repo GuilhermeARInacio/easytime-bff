@@ -40,7 +40,6 @@ public class UsuarioController {
     })
     public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
-
         try {
             if(dto.nome() == null || dto.email() == null || dto.login() == null || dto.password() == null || dto.sector() == null || dto.jobTitle() == null || dto.role() == null) {
                 return ResponseEntity.badRequest().body("Preencha todos os campos.");
@@ -48,7 +47,7 @@ public class UsuarioController {
 
             validacoes.forEach(v -> v.validar(dto));
 
-            LOGGER.debug("Cadastro bem sucedido para o usuário: {}", dto.login());
+            LOGGER.info("Cadastro bem sucedido para o usuário: {}", dto.login());
             ResponseEntity<Object> response = service.criarUsuario(dto, request);
             return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
         } catch (Exception e) {
@@ -68,6 +67,7 @@ public class UsuarioController {
         LOGGER.debug("Listando todos os usuários");
         try {
             ResponseEntity<List<UsuarioRetornoDto>> response = service.listarUsuarios(request);
+            LOGGER.debug("Listagem de usuários realizada com sucesso.");
             return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
         } catch (Exception e){
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
@@ -85,6 +85,7 @@ public class UsuarioController {
         LOGGER.debug("Listando usuário com id: {}", id);
         try {
             ResponseEntity<UsuarioRetornoDto> response = service.listarUsuarioPorId(id, request);
+            LOGGER.info("Listagem bem sucedida para o id: {}", id);
             return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
         } catch (Exception e){
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
@@ -102,6 +103,7 @@ public class UsuarioController {
         LOGGER.debug("Deletando usuário com id: {}", id);
         try {
             ResponseEntity<String> response = service.deletarUsuario(id, request);
+            LOGGER.info("Exclusão bem sucedido do usuario com id: {}", id);
             return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
         } catch (Exception e){
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);

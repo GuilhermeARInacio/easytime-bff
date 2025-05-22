@@ -42,6 +42,7 @@ public class SenhaController {
                 throw new IllegalArgumentException("Preencha todos os campos.");
             }
 
+            LOGGER.info("Redefinição de senha bem sucedida para o usuário com email: {}", codigo.email());
             ResponseEntity<String> response = service.redefinirSenha(codigo, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){
@@ -64,7 +65,7 @@ public class SenhaController {
             if(email == null || email.email() == null) {
                 throw new IllegalArgumentException("Preencha todos os campos.");
             }
-
+            LOGGER.info("Envio de código bem sucedido para o usuário com email: {}", email.email());
             ResponseEntity<String> response = service.enviarCodigo(email, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){

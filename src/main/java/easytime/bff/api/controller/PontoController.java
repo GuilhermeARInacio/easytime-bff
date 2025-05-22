@@ -42,6 +42,7 @@ public class PontoController {
         LOGGER.debug("Registrando ponto para o usuário: {}", login.login());
         try {
             ResponseEntity<?> response = service.registrarPonto(login, request);
+            LOGGER.info("Ponto registrado para o usuário: {}", login.login());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             LOGGER.error("Erro ao registrar ponto para o usuário: {}", login.login(), e);
@@ -61,6 +62,7 @@ public class PontoController {
         LOGGER.debug("Deletando resgistro de ponto com o id: {}", id);
         try {
             ResponseEntity<?> response = service.deletarPonto(id, request);
+            LOGGER.info("Exclusão bem sucedida do registro com id: {}", id);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpClientErrorException.NotFound e) {
             LOGGER.error("Ponto não encontrado com o id: {}", id, e);
@@ -81,9 +83,10 @@ public class PontoController {
     })
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
-        LOGGER.debug("Consultando pontos do usuario: {}", dto.login());
+        LOGGER.debug("Consultando pontos do usuário: {}", dto.login());
         try {
             var response = service.consultarPonto(dto, request);
+            LOGGER.debug("Consulta de pontos bem sucedida do usuário: {}", dto.login());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpClientErrorException.NotFound e){
             LOGGER.error("Nenhum ponto encontrado", e);
