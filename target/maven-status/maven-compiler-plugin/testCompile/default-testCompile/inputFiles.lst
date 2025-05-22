@@ -1,9 +1,11 @@
 /home/runner/workspace/src/test/java/easytime/bff/api/EasytimeBffApplicationTests.java
 /home/runner/workspace/src/test/java/easytime/bff/api/controller/AutenticacaoControllerTest.java
 /home/runner/workspace/src/test/java/easytime/bff/api/controller/HealthControllerTest.java
+/home/runner/workspace/src/test/java/easytime/bff/api/controller/PontoControllerTest.java
 /home/runner/workspace/src/test/java/easytime/bff/api/controller/SenhaControllerTest.java
 /home/runner/workspace/src/test/java/easytime/bff/api/controller/UsuarioControllerTest.java
 /home/runner/workspace/src/test/java/easytime/bff/api/service/AutenticacaoServiceTest.java
+/home/runner/workspace/src/test/java/easytime/bff/api/service/PontoServiceTest.java
 /home/runner/workspace/src/test/java/easytime/bff/api/service/SenhaServiceTest.java
 /home/runner/workspace/src/test/java/easytime/bff/api/service/UsuarioServiceTest.java
 /home/runner/workspace/src/test/java/easytime/bff/api/validacoes/cadastro/ValidacaoEmailCadastroTest.java

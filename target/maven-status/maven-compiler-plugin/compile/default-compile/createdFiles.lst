@@ -1,10 +1,7 @@
 easytime/bff/api/validacoes/cadastro/ValidacaoEmailCadastro.class
-easytime/bff/api/dto/UsuarioDto.class
 easytime/bff/api/service/SenhaService.class
 easytime/bff/api/infra/exception/GlobalExceptionHandler.class
-easytime/bff/api/dto/CodigoValidacao.class
 easytime/bff/api/infra/security/SecurityConfigurations.class
-easytime/bff/api/dto/UsuarioRetornoDto.class
 easytime/bff/api/util/ExceptionHandlerUtil.class
 easytime/bff/api/controller/HealthController.class
 easytime/bff/api/validacoes/cadastro/ValidacaoNomeCadastro.class
@@ -13,8 +10,6 @@ easytime/bff/api/service/UsuarioService$1.class
 easytime/bff/api/infra/security/SecurityFilter.class
 easytime/bff/api/EasytimeBffApplication.class
 easytime/bff/api/validacoes/login/ValidacaoSenhaLogin.class
-easytime/bff/api/dto/EmailRequest.class
-easytime/bff/api/dto/DadosAutenticacao.class
 easytime/bff/api/validacoes/cadastro/ValidacaoUsuarioCadastro.class
 easytime/bff/api/infra/security/TokenService.class
 easytime/bff/api/validacoes/cadastro/ValidacoesCadastro.class
