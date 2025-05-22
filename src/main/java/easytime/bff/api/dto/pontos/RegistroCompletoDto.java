@@ -17,8 +17,4 @@ public record RegistroCompletoDto (
         Time saida3,
         Status status
 ){
-    @JsonProperty("horasTrabalhadas")
-    public double horasTrabalhadasEmHoras() {
-        return horasTrabalhadas == null ? 0 : horasTrabalhadas.toMinutes() / 60.0;
-    }
 }
