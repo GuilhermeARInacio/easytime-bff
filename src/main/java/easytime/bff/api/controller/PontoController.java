@@ -137,5 +137,18 @@ public class PontoController {
         }
     }
 
+    @GetMapping()
+    public ResponseEntity<?> getPontos(HttpServletRequest request) {
+
+        LOGGER.debug("Listando pontos");
+        try {
+            ResponseEntity<?> response = service.listarPontos(request);
+            LOGGER.info("Listagem de pontos realizada com sucesso");
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            LOGGER.error("Erro ao listar pontos", e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
 
 }

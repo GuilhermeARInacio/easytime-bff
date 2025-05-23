@@ -65,4 +65,12 @@ public class PontoService {
 
         return restTemplate.exchange(url, PUT, entity, RegistroCompletoDto.class);
     }
+
+    public ResponseEntity<List<RegistroCompletoDto>> listarPontos(HttpServletRequest request) {
+        String url = urlSrv + "ponto";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+
+        return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
+                new ParameterizedTypeReference<List<RegistroCompletoDto>>() {});
+    }
 }
