@@ -2,21 +2,20 @@ package easytime.bff.api.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class HealthControllerTest {
-    @Test
-    @DisplayName("Teste rota health, deve retornar 200")
-    void deveRetornar200() {
-        HealthController healthController = new HealthController();
-        var response = healthController.health();
 
-        assertEquals(200, response.getStatusCodeValue());
+    @Test
+    @DisplayName("Should return 200 and welcome message")
+    void health_returns200AndWelcomeMessage() {
+        HealthController controller = new HealthController();
+        ResponseEntity<?> response = controller.health();
+
+        assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
         assertEquals("Bem-vindo ao EasyTime!", response.getBody());
     }
 }

@@ -7,7 +7,6 @@ import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import easytime.bff.api.validacoes.alterar_ponto.ValidacaoAlterarPonto;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;

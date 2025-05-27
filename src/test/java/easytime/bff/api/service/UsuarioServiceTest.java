@@ -1,133 +1,121 @@
 package easytime.bff.api.service;
 
-import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.dto.usuario.UsuarioDto;
 import easytime.bff.api.dto.usuario.UsuarioRetornoDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.http.*;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpMethod.GET;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 class UsuarioServiceTest {
 
     @InjectMocks
-    private UsuarioService service;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpHeaderUtil httpHeaderUtil;
+    private UsuarioService usuarioService;
 
     @Mock
     private RestTemplate restTemplate;
 
-    private HttpHeaders headers;
+    @Mock
+    private HttpServletRequest request;
 
-    private MockedStatic<HttpHeaderUtil> mockedStaticHttpHeaderUtil;
+    private HttpHeaders headers;
+    private AutoCloseable mocks;
+    private MockedStatic<HttpHeaderUtil> staticHttpHeaderUtil;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        mocks = MockitoAnnotations.openMocks(this);
         headers = new HttpHeaders();
         headers.add("Authorization", "Bearer token");
+        staticHttpHeaderUtil = mockStatic(HttpHeaderUtil.class);
+        staticHttpHeaderUtil.when(() -> HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
 
-        // Mock HttpHeaderUtil.copyHeaders to return the headers
-        mockedStaticHttpHeaderUtil = mockStatic(HttpHeaderUtil.class);
-        mockedStaticHttpHeaderUtil.when(() -> HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.singletonList("Authorization")));
-        when(request.getHeader("Authorization")).thenReturn("Bearer token");
-
-        Field field = UsuarioService.class.getDeclaredField("restTemplate");
-        field.setAccessible(true);
-        field.set(service, restTemplate);
+        ReflectionTestUtils.setField(usuarioService, "restTemplate", restTemplate);
+        ReflectionTestUtils.setField(usuarioService, "urlSrv", "http://localhost:8080/");
     }
 
     @AfterEach
-    void tearDown() {
-        if (mockedStaticHttpHeaderUtil != null) {
-            mockedStaticHttpHeaderUtil.close();
-        }
+    void tearDown() throws Exception {
+        staticHttpHeaderUtil.close();
+        mocks.close();
     }
 
     @Test
-    @DisplayName("Deve criar usuário com sucesso")
-    void criarUsuarioComSucesso() {
-        UsuarioRetornoDto mockResponse = Mockito.mock(UsuarioRetornoDto.class);
-        HttpEntity<UsuarioDto> entity = new HttpEntity<>(Mockito.mock(UsuarioDto.class), headers);
+    void criarUsuario_shouldCallRestTemplate() {
+        UsuarioDto dto = mock(UsuarioDto.class);
+        ResponseEntity<Object> expected = ResponseEntity.ok("created");
 
-        when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange("http://localhost:8080/users/create", HttpMethod.PUT, entity, Object.class))
-                .thenReturn(ResponseEntity.ok(mockResponse));
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/users/create"),
+                eq(HttpMethod.PUT),
+                any(HttpEntity.class),
+                eq(Object.class)
+        )).thenReturn(expected);
 
-        service.criarUsuario(Mockito.mock(UsuarioDto.class), request);
+        ResponseEntity<Object> result = usuarioService.criarUsuario(dto, request);
+
+        assertEquals(expected, result);
     }
 
     @Test
-    @DisplayName("Deve listar usuários com sucesso")
-    void listarUsuariosComSucesso() {
-        List<UsuarioRetornoDto> usuarios = List.of(mock(UsuarioRetornoDto.class));
-        HttpEntity<UsuarioDto> entity = new HttpEntity<>(headers);
+    void listarUsuarios_shouldCallRestTemplate() {
+        List<UsuarioRetornoDto> usuarios = Collections.emptyList();
+        ResponseEntity<List<UsuarioRetornoDto>> expected = ResponseEntity.ok(usuarios);
 
-        when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange("http://localhost:8080/users/list", HttpMethod.GET, entity, Object.class))
-                .thenReturn(ResponseEntity.ok(usuarios));
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/users/list"),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                ArgumentMatchers.<ParameterizedTypeReference<List<UsuarioRetornoDto>>>any()
+        )).thenReturn(expected);
 
-        service.listarUsuarios(request);
+        ResponseEntity<List<UsuarioRetornoDto>> result = usuarioService.listarUsuarios(request);
+
+        assertEquals(expected, result);
     }
 
     @Test
-    @DisplayName("Deve listar usuário por ID com sucesso")
-    void listarUsuarioPorIdComSucesso() {
-        Integer id = 1;
-        String url = "http://localhost:8080/users/getById/" + id;
-
-        HttpEntity<UsuarioDto> entity = new HttpEntity<>(headers);
-
-        when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange(url, HttpMethod.GET, entity, UsuarioRetornoDto.class))
-                .thenReturn(ResponseEntity.ok(mock(UsuarioRetornoDto.class)));
-
-        ResponseEntity<UsuarioRetornoDto> response = service.listarUsuarioPorId(id, request);
-    }
-
-    @Test
-    @DisplayName("Deve deletar usuário com sucesso")
-    void deletarUsuarioComSucesso() throws NoSuchFieldException, IllegalAccessException {
+    void listarUsuarioPorId_shouldCallRestTemplate() {
         int id = 1;
-        String url = "http://localhost:8080/users/delete/" + id;
-        HttpEntity<UsuarioDto> entity = new HttpEntity<>(headers);
+        UsuarioRetornoDto usuario = mock(UsuarioRetornoDto.class);
+        ResponseEntity<UsuarioRetornoDto> expected = ResponseEntity.ok(usuario);
 
-        when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange(url, HttpMethod.DELETE, entity, Object.class))
-                .thenReturn(ResponseEntity.ok(""));
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/users/getById/1"),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(UsuarioRetornoDto.class)
+        )).thenReturn(expected);
 
-        ResponseEntity<String> response = service.deletarUsuario(id, request);
+        ResponseEntity<UsuarioRetornoDto> result = usuarioService.listarUsuarioPorId(id, request);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void deletarUsuario_shouldCallRestTemplate() {
+        int id = 1;
+        ResponseEntity<String> expected = ResponseEntity.ok("deleted");
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/users/delete/1"),
+                eq(HttpMethod.DELETE),
+                any(HttpEntity.class),
+                eq(String.class)
+        )).thenReturn(expected);
+
+        ResponseEntity<String> result = usuarioService.deletarUsuario(id, request);
+
+        assertEquals(expected, result);
     }
 }

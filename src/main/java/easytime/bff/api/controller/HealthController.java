@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthController {
 
     @RequestMapping
-    public ResponseEntity health() {
+    public ResponseEntity<String> health() {
         return ResponseEntity.ok("Bem-vindo ao EasyTime!");
     }
 }

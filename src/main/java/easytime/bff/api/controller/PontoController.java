@@ -3,7 +3,6 @@ package easytime.bff.api.controller;
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.usuario.LoginDto;
-import easytime.bff.api.infra.exception.InvalidUserException;
 import easytime.bff.api.service.PontoService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,8 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,12 +82,8 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado ou usuario não encontrado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> consultaPonto(@RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
+    public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
         LOGGER.debug("Consultando pontos do usuário: {}", dto.login());
-        if(dto.dtInicio() == null || dto.dtFinal() == null || dto.login() == null || dto.login().isBlank() || dto.dtInicio().isBlank() || dto.dtFinal().isBlank()){
-            LOGGER.error("Dados inválidos para consulta de pontos");
-            return ResponseEntity.status(400).body("Todos os campos devem ser preenchidos!");
-        }
         
         try {
             var response = service.consultarPonto(dto, request);

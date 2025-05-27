@@ -7,6 +7,7 @@ import easytime.bff.api.validacoes.login.ValidacoesLogin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,9 @@ public class AutenticacaoController {
             @ApiResponse(responseCode = "400", description = "Formato de senha ou usuário inválido, ou campos vazios"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
-    public ResponseEntity<?> autenticar(@RequestBody DadosAutenticacao dto) {
+    public ResponseEntity<?> autenticar(@Valid @RequestBody DadosAutenticacao dto) {
         LOGGER.debug("Iniciando autenticação para o usuário: {}", dto.login());
         try {
-            if (dto == null || dto.senha() == null || dto.login() == null) {
-                return ResponseEntity.badRequest().body("Preencha todos os campos.");
-            }
 
             validacoes.forEach(v -> v.validar(dto));
 

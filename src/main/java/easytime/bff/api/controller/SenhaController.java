@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,9 @@ public class SenhaController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> redefinirSenha(@RequestBody CodigoValidacao codigo, HttpServletRequest request) {
+    public ResponseEntity<?> redefinirSenha(@Valid @RequestBody CodigoValidacao codigo, HttpServletRequest request) {
         LOGGER.debug("Redefinindo senha para o usuário: {}", codigo.email());
         try{
-            if(codigo == null || codigo.email() == null || codigo.senha() == null || codigo.code().isBlank() || codigo.code() == null) {
-                throw new IllegalArgumentException("Preencha todos os campos.");
-            }
-
             LOGGER.info("Redefinição de senha bem sucedida para o usuário com email: {}", codigo.email());
             ResponseEntity<String> response = service.redefinirSenha(codigo, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
@@ -59,12 +56,9 @@ public class SenhaController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> enviarCodigo(@RequestBody EmailRequest email, HttpServletRequest request) {
+    public ResponseEntity<?> enviarCodigo(@Valid @RequestBody EmailRequest email, HttpServletRequest request) {
         LOGGER.debug("Enviando código para o usuário: {}", email.email());
         try{
-            if(email == null || email.email() == null) {
-                throw new IllegalArgumentException("Preencha todos os campos.");
-            }
             LOGGER.info("Envio de código bem sucedido para o usuário com email: {}", email.email());
             ResponseEntity<String> response = service.enviarCodigo(email, request);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
