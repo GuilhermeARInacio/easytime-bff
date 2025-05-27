@@ -48,10 +48,10 @@ class AutenticacaoServiceTest {
 
         RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
         String url = "https://70b9bf47-dcb1-46e9-9886-1110d671967d-00-1upha6j38mgjy.riker.replit.dev:8080/login";
-        String tokenEsperado = "token";
+        TokenDto tokenEsperado = Mockito.mock(TokenDto.class);
 
         // Simula o comportamento do RestTemplate
-        when(restTemplateMock.postForObject(url, usuario, String.class)).thenReturn(tokenEsperado);
+        when(restTemplateMock.postForObject(url, usuario, TokenDto.class)).thenReturn(tokenEsperado);
 
         // Injecta o mock no serviço
         service = new AutenticacaoService() {

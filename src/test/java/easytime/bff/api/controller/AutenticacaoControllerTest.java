@@ -50,14 +50,15 @@ class AutenticacaoControllerTest {
     @DisplayName("Deve retornar 200 para autenticação bem-sucedida")
     void codigo200paraSucesso() {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
+        TokenDto dtoToken = Mockito.mock(TokenDto.class);
         when(dto.senha()).thenReturn("user");
         when(dto.login()).thenReturn("pass");
-        when(service.autenticar(dto)).thenReturn(Mockito.mock(TokenDto.class));
+        when(service.autenticar(dto)).thenReturn(dtoToken);
 
         ResponseEntity<?> response = controller.autenticar(dto);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(Mockito.mock(TokenDto.class), response.getBody());
+        assertEquals(dtoToken, response.getBody());
         verify(validacoes).forEach(any());
     }
 
