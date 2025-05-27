@@ -1,5 +1,6 @@
 package easytime.bff.api.controller;
 
+import easytime.bff.api.dto.token.TokenDto;
 import easytime.bff.api.dto.usuario.DadosAutenticacao;
 import easytime.bff.api.service.AutenticacaoService;
 import easytime.bff.api.validacoes.login.ValidacoesLogin;
@@ -55,7 +56,7 @@ class AutenticacaoControllerTest {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
         when(dto.senha()).thenReturn("senha");
         when(dto.login()).thenReturn("usuario");
-        when(service.autenticar(dto)).thenReturn("token");
+        when(service.autenticar(dto)).thenReturn(Mockito.mock(TokenDto.class));
 
         ResponseEntity<?> response = controller.autenticar(dto);
         assertEquals(200, response.getStatusCode().value());

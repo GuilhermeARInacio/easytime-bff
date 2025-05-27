@@ -1,5 +1,6 @@
 package easytime.bff.api.service;
 
+import easytime.bff.api.dto.token.TokenDto;
 import easytime.bff.api.dto.usuario.DadosAutenticacao;
 
 import easytime.bff.api.validacoes.login.ValidacaoUsuarioLogin;
@@ -18,12 +19,12 @@ public class AutenticacaoService {
     @Value("${SRV_URL}")
     private String urlSrv;
 
-    public String autenticar(DadosAutenticacao usuario) throws HttpMessageNotReadableException {
+    public TokenDto autenticar(DadosAutenticacao usuario) throws HttpMessageNotReadableException {
         try {
             HttpClient client = HttpClient.newHttpClient();
             RestTemplate restTemplate = new RestTemplate();
             String url = urlSrv + "login";
-            String response = restTemplate.postForObject(url, usuario, String.class);
+            TokenDto response = restTemplate.postForObject(url, usuario, TokenDto.class);
 
             return response;
         } catch (Exception e) {

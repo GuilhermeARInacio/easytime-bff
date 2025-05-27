@@ -1,5 +1,6 @@
 package easytime.bff.api.service;
 
+import easytime.bff.api.dto.token.TokenDto;
 import easytime.bff.api.dto.usuario.DadosAutenticacao;
 import easytime.bff.api.validacoes.login.ValidacoesLogin;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,12 +56,12 @@ class AutenticacaoServiceTest {
         // Injecta o mock no serviço
         service = new AutenticacaoService() {
             @Override
-            public String autenticar(DadosAutenticacao usuario) {
-                return restTemplateMock.postForObject(url, usuario, String.class);
+            public TokenDto autenticar(DadosAutenticacao usuario) {
+                return restTemplateMock.postForObject(url, usuario, TokenDto.class);
             }
         };
         // Act
-        String token = service.autenticar(usuario);
+        TokenDto token = service.autenticar(usuario);
         // Assert
         assertEquals(tokenEsperado, token);
     }
@@ -109,12 +110,12 @@ class AutenticacaoServiceTest {
         String erroEsperado = "Formato de JSON Inválido. Verifique o corpo da requisição";
 
         // Simula o comportamento do RestTemplate
-        when(restTemplateMock.postForObject(url, dto, String.class)).thenThrow(new HttpMessageNotReadableException(erroEsperado));
+        when(restTemplateMock.postForObject(url, dto, TokenDto.class)).thenThrow(new HttpMessageNotReadableException(erroEsperado));
 
         service = new AutenticacaoService() {
             @Override
-            public String autenticar(DadosAutenticacao usuario) {
-                return restTemplateMock.postForObject(url, usuario, String.class);
+            public TokenDto autenticar(DadosAutenticacao usuario) {
+                return restTemplateMock.postForObject(url, usuario, TokenDto.class);
             }
         };
 
