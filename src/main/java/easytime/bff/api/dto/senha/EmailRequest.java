@@ -1,6 +1,9 @@
 package easytime.bff.api.dto.senha;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record EmailRequest(
-        String email
+        @NotNull @NotBlank String email
 ) {
 }

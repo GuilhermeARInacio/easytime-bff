@@ -7,7 +7,6 @@ import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import easytime.bff.api.validacoes.alterar_ponto.ValidacaoAlterarPonto;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -64,5 +63,13 @@ public class PontoService {
         validacoes.forEach(validacao -> validacao.validar(dto));
 
         return restTemplate.exchange(url, PUT, entity, RegistroCompletoDto.class);
+    }
+
+    public ResponseEntity<List<RegistroCompletoDto>> listarPontos(HttpServletRequest request) {
+        String url = urlSrv + "ponto";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+
+        return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
+                new ParameterizedTypeReference<List<RegistroCompletoDto>>() {});
     }
 }

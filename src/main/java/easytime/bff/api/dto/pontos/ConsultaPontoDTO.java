@@ -1,10 +1,11 @@
 package easytime.bff.api.dto.pontos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ConsultaPontoDTO(
-        String login,
-        String dtInicio,
-        String dtFinal
+        @NotBlank @NotNull String login,
+        @NotBlank @NotNull String dtInicio,
+        @NotBlank @NotNull String dtFinal
 ) {
 }

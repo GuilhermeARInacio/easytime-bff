@@ -1,24 +1,25 @@
 package easytime.bff.api.dto.usuario;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 
 @Schema(description = "Dados do usuário para cadastro")
 public record UsuarioDto(
         @Schema(description = "ID do usuário", example = "user")
-        String nome,
+        @NotBlank @NotBlank String nome,
         @Schema(description = "E-mail do usuário", example = "user@email.com")
-        String email,
+        @NotBlank @NotBlank String email,
         @Schema(description = "Login do usuário", example = "user123")
-        String login,
+        @NotBlank @NotBlank String login,
         @Schema(description = "Senha do usuário", example = "senha#123")
-        String password,
+        @NotBlank @NotBlank String password,
         @Schema(description = "Setor do usuário", example = "TI")
-        String sector,
+        @NotBlank @NotBlank String sector,
         @Schema(description = "Cargo do usuário", example = "Desenvolvedor")
-        String jobTitle,
+        @NotBlank @NotBlank String jobTitle,
         @Schema(description = "Função do usuário", example = "ROLE_USER")
-        String role,
+        @NotBlank @NotBlank String role,
         @Schema(description = "Ativo", example = "true")
-        boolean isActive
+        @NotBlank @NotBlank boolean isActive
 ) {
 }

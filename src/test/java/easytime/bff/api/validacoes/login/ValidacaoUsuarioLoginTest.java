@@ -4,11 +4,15 @@ import easytime.bff.api.dto.usuario.DadosAutenticacao;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestPropertySource(properties = {
+        "SRV_URL=http://localhost:8080"
+})
 class ValidacaoUsuarioLoginTest {
 
     @Test

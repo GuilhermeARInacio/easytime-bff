@@ -1,8 +1,5 @@
 package easytime.bff.api.dto.pontos;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,35 +1,25 @@
 package easytime.bff.api.service;
 
+import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.pontos.RegistroCompletoDto;
-import easytime.bff.api.dto.pontos.Status;
 import easytime.bff.api.dto.usuario.LoginDto;
-import easytime.bff.api.dto.pontos.TimeLogDto;
 import easytime.bff.api.util.HttpHeaderUtil;
+import easytime.bff.api.validacoes.alterar_ponto.ValidacaoAlterarPonto;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.*;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Field;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Collections;
-import org.mockito.MockedStatic;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 class PontoServiceTest {
 
     @InjectMocks
@@ -41,82 +31,118 @@ class PontoServiceTest {
     @Mock
     private HttpServletRequest request;
 
+    @Mock
+    private ValidacaoAlterarPonto validacaoAlterarPonto;
+
     private HttpHeaders headers;
 
-    private MockedStatic<HttpHeaderUtil> mockedStaticHttpHeaderUtil;
+    private AutoCloseable mocks;
+    private MockedStatic<HttpHeaderUtil> staticHttpHeaderUtil;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
-        MockitoAnnotations.openMocks(this);
+    void setUp() throws Exception {
+        mocks = MockitoAnnotations.openMocks(this);
         headers = new HttpHeaders();
         headers.add("Authorization", "Bearer token");
 
-        // Mock HttpHeaderUtil.copyHeaders to return the headers
-        mockedStaticHttpHeaderUtil = mockStatic(HttpHeaderUtil.class);
-        mockedStaticHttpHeaderUtil.when(() -> HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.singletonList("Authorization")));
-        when(request.getHeader("Authorization")).thenReturn("Bearer token");
+        staticHttpHeaderUtil = mockStatic(HttpHeaderUtil.class);
+        staticHttpHeaderUtil.when(() -> HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
 
-        Field field = PontoService.class.getDeclaredField("restTemplate");
-        field.setAccessible(true);
-        field.set(pontoService, restTemplate);
+        ReflectionTestUtils.setField(pontoService, "restTemplate", restTemplate);
+        ReflectionTestUtils.setField(pontoService, "urlSrv", "http://localhost:8080/");
+        ReflectionTestUtils.setField(pontoService, "validacoes", List.of(validacaoAlterarPonto));
     }
 
     @AfterEach
-    void tearDown() {
-        // Close the static mock to avoid conflicts
-        if (mockedStaticHttpHeaderUtil != null) {
-            mockedStaticHttpHeaderUtil.close();
-        }
+    void tearDown() throws Exception {
+        staticHttpHeaderUtil.close();
+        mocks.close();
     }
 
     @Test
-    @DisplayName("Should successfully register a point")
-    void testRegistrarPonto() {
-        // Arrange
-        LoginDto loginDto = new LoginDto("user123");
-        TimeLogDto timeLogDto = new TimeLogDto("", LocalDate.now(), Time.valueOf(LocalTime.now()), Status.PENDENTE);
+    void registrarPonto_shouldCallRestTemplate() {
+        LoginDto loginDto = new LoginDto("user");
+        ResponseEntity<Object> expected = ResponseEntity.ok("ok");
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(Object.class)
+        )).thenReturn(expected);
 
-        HttpEntity<LoginDto> entity = new HttpEntity<>(Mockito.mock(LoginDto.class), headers);
+        ResponseEntity<Object> result = pontoService.registrarPonto(loginDto, request);
 
-        when(HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange("http://localhost:8080/ponto", HttpMethod.POST, entity, Object.class))
-                .thenReturn(ResponseEntity.ok(timeLogDto));
-
-        // Act
-        ResponseEntity<?> response = pontoService.registrarPonto(loginDto, request);
-
+        assertEquals(expected, result);
     }
 
     @Test
-    @DisplayName("Should successfully delete a point")
-    void testDeletarPonto() {
-        // Arrange
-        Integer id = 1;
-        String url = "http://localhost:8080/ponto/" + id;
+    void deletarPonto_shouldCallRestTemplate() {
+        ResponseEntity<String> expected = ResponseEntity.ok("deleted");
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/1"),
+                eq(HttpMethod.DELETE),
+                any(HttpEntity.class),
+                eq(String.class)
+        )).thenReturn(expected);
 
-        HttpEntity<LoginDto> entity = new HttpEntity<>(Mockito.mock(LoginDto.class), headers);
+        ResponseEntity<String> result = pontoService.deletarPonto(1, request);
 
-        when(HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange(url, HttpMethod.DELETE, entity, Object.class))
-                .thenReturn(ResponseEntity.ok(""));
-
-        // Act
-        ResponseEntity<?> response = pontoService.deletarPonto(id, request);
+        assertEquals(expected, result);
     }
 
     @Test
-    @DisplayName("Should successfully consult points")
-    void testConsultarPonto() {
-        // Arrange
-        RegistroCompletoDto dto = Mockito.mock(RegistroCompletoDto.class);
-        HttpEntity<RegistroCompletoDto> entity = new HttpEntity<>(dto, headers);
+    void consultarPonto_shouldCallRestTemplate() {
+        ConsultaPontoDTO dto = mock(ConsultaPontoDTO.class);
+        List<RegistroCompletoDto> list = Collections.emptyList();
+        ResponseEntity<List<RegistroCompletoDto>> expected = ResponseEntity.ok(list);
 
-        when(HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
-        when(restTemplate.exchange("http://localhost:8080/ponto/consulta", HttpMethod.PUT, entity, Object.class))
-                .thenReturn(ResponseEntity.ok(Collections.singletonList(dto)));
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/consulta"),
+                eq(HttpMethod.PUT),
+                any(HttpEntity.class),
+                ArgumentMatchers.<ParameterizedTypeReference<List<RegistroCompletoDto>>>any()
+        )).thenReturn(expected);
 
-        // Act
-        ResponseEntity<?> response = pontoService.consultarPonto(Mockito.mock(ConsultaPontoDTO.class), request);
+        ResponseEntity<List<RegistroCompletoDto>> result = pontoService.consultarPonto(dto, request);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void alterarPonto_shouldValidateAndCallRestTemplate() {
+        AlterarPontoDto dto = mock(AlterarPontoDto.class);
+        RegistroCompletoDto registro = mock(RegistroCompletoDto.class);
+        ResponseEntity<RegistroCompletoDto> expected = ResponseEntity.ok(registro);
+
+        doNothing().when(validacaoAlterarPonto).validar(dto);
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/alterar"),
+                eq(HttpMethod.PUT),
+                any(HttpEntity.class),
+                eq(RegistroCompletoDto.class)
+        )).thenReturn(expected);
+
+        ResponseEntity<RegistroCompletoDto> result = pontoService.alterarPonto(dto, request);
+
+        assertEquals(expected, result);
+        verify(validacaoAlterarPonto).validar(dto);
+    }
+
+    @Test
+    void listarPontos_shouldCallRestTemplate() {
+        List<RegistroCompletoDto> list = Collections.emptyList();
+        ResponseEntity<List<RegistroCompletoDto>> expected = ResponseEntity.ok(list);
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto"),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                ArgumentMatchers.<ParameterizedTypeReference<List<RegistroCompletoDto>>>any()
+        )).thenReturn(expected);
+
+        ResponseEntity<List<RegistroCompletoDto>> result = pontoService.listarPontos(request);
+
+        assertEquals(expected, result);
     }
 }

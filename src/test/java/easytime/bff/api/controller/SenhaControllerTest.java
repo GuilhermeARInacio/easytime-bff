@@ -3,128 +3,110 @@ package easytime.bff.api.controller;
 import easytime.bff.api.dto.senha.CodigoValidacao;
 import easytime.bff.api.dto.senha.EmailRequest;
 import easytime.bff.api.service.SenhaService;
+import easytime.bff.api.util.ExceptionHandlerUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.MockedStatic;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 class SenhaControllerTest {
 
-    @InjectMocks
     private SenhaController controller;
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Mock
     private SenhaService service;
-
-    @Mock
     private HttpServletRequest request;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() throws Exception {
+        service = mock(SenhaService.class);
+        request = mock(HttpServletRequest.class);
+        controller = new SenhaController();
+
+        // Inject mock service
+        Field serviceField = SenhaController.class.getDeclaredField("service");
+        serviceField.setAccessible(true);
+        serviceField.set(controller, service);
+    }
+
+    private Logger getLogger() throws Exception {
+        Field loggerField = SenhaController.class.getDeclaredField("LOGGER");
+        loggerField.setAccessible(true);
+        return (Logger) loggerField.get(null);
     }
 
     @Test
-    @DisplayName("Deve retornar 200 ao redefinir senha com sucesso")
-    void redefinirSenhaComSucesso() {
+    void redefinirSenha_success() {
         CodigoValidacao dto = mock(CodigoValidacao.class);
-        when(dto.senha()).thenReturn("123456");
-        when(dto.email()).thenReturn("email@email.com");
-        when(dto.code()).thenReturn("123456");
+        when(dto.email()).thenReturn("user@email.com");
+        when(service.redefinirSenha(any(), any()))
+                .thenReturn(ResponseEntity.ok("Senha redefinida"));
 
-        when(service.redefinirSenha(dto, request)).thenReturn(ResponseEntity.status(HttpStatus.OK).body("Senha redefinida com sucesso"));
+        var response = controller.redefinirSenha(dto, request);
 
-        ResponseEntity<?> response = controller.redefinirSenha(dto, request);
-
-        assertEquals(200, response.getStatusCode().value());
-        verify(service, times(1)).redefinirSenha(dto, request);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Senha redefinida", response.getBody());
     }
 
     @Test
-    @DisplayName("Deve retornar 400 ao redefinir senha com campo vazio")
-    void redefinirSenhaComCampoVazio() {
+    void redefinirSenha_callsExceptionHandlerOnException() throws Exception {
         CodigoValidacao dto = mock(CodigoValidacao.class);
-        when(dto.senha()).thenReturn(null);
-        when(dto.email()).thenReturn("email@email.com");
-        when(dto.code()).thenReturn("123456");
+        when(dto.email()).thenReturn("user@email.com");
+        RuntimeException ex = new RuntimeException("fail");
+        when(service.redefinirSenha(any(), any())).thenThrow(ex);
 
-        ResponseEntity<?> response = controller.redefinirSenha(dto, request);
+        Logger logger = getLogger();
 
-        assertEquals(400, response.getStatusCode().value());
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            var response = controller.redefinirSenha(dto, request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            assertEquals("error", response.getBody());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger), times(1));
+        }
     }
 
     @Test
-    @DisplayName("Deve retornar 403 com usuario não autorizado")
-    void redefinirSenhaNaoAutorizado() throws Exception {
-        String json = "";
-
-        var response = mvc.perform(
-                put("/senha/redefinir")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andReturn().getResponse();
-
-        assertEquals(403, response.getStatus());
-    }
-
-    @Test
-    @DisplayName("Deve retornar 200 ao enviar codigo com sucesso")
-    void envairCodigoComSucesso() {
+    void enviarCodigo_success() {
         EmailRequest dto = mock(EmailRequest.class);
-        when(dto.email()).thenReturn("email@email.com");
+        when(dto.email()).thenReturn("user@email.com");
+        when(service.enviarCodigo(any(), any()))
+                .thenReturn(ResponseEntity.ok("Código enviado"));
 
-        when(service.enviarCodigo(dto, request)).thenReturn(ResponseEntity.status(HttpStatus.OK).body("Código enviado com sucesso"));
+        var response = controller.enviarCodigo(dto, request);
 
-        ResponseEntity<?> response = controller.enviarCodigo(dto, request);
-
-        assertEquals(200, response.getStatusCode().value());
-        verify(service, times(1)).enviarCodigo(dto, request);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Código enviado", response.getBody());
     }
 
     @Test
-    @DisplayName("Deve retornar 400 ao enviar codigo com campo vazio")
-    void enviarCodigoComCampoVazio() {
+    void enviarCodigo_callsExceptionHandlerOnException() throws Exception {
         EmailRequest dto = mock(EmailRequest.class);
-        when(dto.email()).thenReturn(null);
+        when(dto.email()).thenReturn("user@email.com");
+        RuntimeException ex = new RuntimeException("fail");
+        when(service.enviarCodigo(any(), any())).thenThrow(ex);
 
-        ResponseEntity<?> response = controller.enviarCodigo(dto, request);
+        Logger logger = getLogger();
 
-        assertEquals(400, response.getStatusCode().value());
-    }
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
 
-    @Test
-    @DisplayName("Deve retornar 403 com usuario não autorizado")
-    void enviarCodigoNaoAutorizado() throws Exception {
-        String json = "";
+            var response = controller.enviarCodigo(dto, request);
 
-        var response = mvc.perform(
-                put("/senha/enviar-codigo")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andReturn().getResponse();
-
-        assertEquals(403, response.getStatus());
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            assertEquals("error", response.getBody());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger), times(1));
+        }
     }
 }

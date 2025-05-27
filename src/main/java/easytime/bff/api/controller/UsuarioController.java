@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +39,15 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Formato dos campos inválido"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
-    public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
+    public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
         try {
-            if(dto.nome() == null || dto.email() == null || dto.login() == null || dto.password() == null || dto.sector() == null || dto.jobTitle() == null || dto.role() == null) {
-                return ResponseEntity.badRequest().body("Preencha todos os campos.");
-            }
 
             validacoes.forEach(v -> v.validar(dto));
 
             LOGGER.info("Cadastro bem sucedido para o usuário: {}", dto.login());
             ResponseEntity<Object> response = service.criarUsuario(dto, request);
-            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             LOGGER.error("Erro ao cadastrar o usuário: {}", dto.login(), e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
@@ -68,7 +66,7 @@ public class UsuarioController {
         try {
             ResponseEntity<List<UsuarioRetornoDto>> response = service.listarUsuarios(request);
             LOGGER.debug("Listagem de usuários realizada com sucesso.");
-            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
@@ -86,7 +84,7 @@ public class UsuarioController {
         try {
             ResponseEntity<UsuarioRetornoDto> response = service.listarUsuarioPorId(id, request);
             LOGGER.info("Listagem bem sucedida para o id: {}", id);
-            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
@@ -104,7 +102,7 @@ public class UsuarioController {
         try {
             ResponseEntity<String> response = service.deletarUsuario(id, request);
             LOGGER.info("Exclusão bem sucedido do usuario com id: {}", id);
-            return ResponseEntity.status(response.getStatusCodeValue()).body(response.getBody());
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
