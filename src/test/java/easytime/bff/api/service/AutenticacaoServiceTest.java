@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import java.util.List;
@@ -23,8 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@TestPropertySource(properties = {
+        "SRV_URL=http://localhost:8080"
+})
 class AutenticacaoServiceTest {
 
     @InjectMocks
@@ -34,9 +37,6 @@ class AutenticacaoServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
-    @Mock
-    private List<ValidacoesLogin> validacoes;
 
     @Test
     @DisplayName("Deve autenticar com sucesso e retornar o token")
@@ -64,20 +64,6 @@ class AutenticacaoServiceTest {
         TokenDto token = service.autenticar(usuario);
         // Assert
         assertEquals(tokenEsperado, token);
-    }
-
-    @Test
-    @DisplayName("Verifica se as validações foram realmente chamadas")
-    void verificaValidacoes(){
-        DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn("senha");
-        when(dto.login()).thenReturn("usuario");
-
-        validacoes.forEach(validacao -> Mockito.doNothing().when(validacao).validar(dto));
-
-        validacoes.forEach(validacao -> validacao.validar(dto));
-
-        validacoes.forEach(validacao -> Mockito.verify(validacao).validar(dto));
     }
 
     @Test

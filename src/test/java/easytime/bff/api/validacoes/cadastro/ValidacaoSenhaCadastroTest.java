@@ -5,12 +5,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestPropertySource(properties = {
+        "SRV_URL=http://localhost:8080"
+})
 class ValidacaoSenhaCadastroTest {
     @Test
     @DisplayName("Deve validar senha com sucesso")
@@ -58,6 +61,18 @@ class ValidacaoSenhaCadastroTest {
         ValidacaoSenhaCadastro validacao = new ValidacaoSenhaCadastro();
         String senhaInvalida = "senhato";
         assertThrows(IllegalArgumentException.class, () -> validacao.validar(new UsuarioDto("nome", "email", "login", senhaInvalida, "sector", "job", "role", true)));
+    }
+
+    @Test
+    @DisplayName("Should throw error when password has no special character")
+    void shouldThrowErrorWhenPasswordHasNoSpecialCharacter() {
+        ValidacaoSenhaCadastro validacao = new ValidacaoSenhaCadastro();
+        // Valid: length >= 8, has letters, has numbers, but no special character
+        String senhaInvalida = "Senha1234";
+        UsuarioDto usuario = new UsuarioDto("nome", "email", "login", senhaInvalida, "sector", "job", "role", true);
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> validacao.validar(usuario));
+        assertEquals("A senha deve conter pelo menos um caractere especial", ex.getMessage());
     }
 
 }

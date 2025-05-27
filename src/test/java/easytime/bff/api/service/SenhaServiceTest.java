@@ -2,88 +2,80 @@ package easytime.bff.api.service;
 
 import easytime.bff.api.dto.senha.CodigoValidacao;
 import easytime.bff.api.dto.senha.EmailRequest;
-import easytime.bff.api.dto.usuario.UsuarioDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.*;
+import org.mockito.*;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 class SenhaServiceTest {
 
     @InjectMocks
-    private SenhaService service;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpHeaderUtil httpHeaderUtil;
+    private SenhaService senhaService;
 
     @Mock
     private RestTemplate restTemplate;
 
-    private HttpHeaders headers;
+    @Mock
+    private HttpServletRequest request;
+
+    private AutoCloseable mocks;
+    private MockedStatic<HttpHeaderUtil> staticHttpHeaderUtil;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer token");
+        staticHttpHeaderUtil = mockStatic(HttpHeaderUtil.class);
+        staticHttpHeaderUtil.when(() -> HttpHeaderUtil.copyHeaders(request)).thenReturn(headers);
+
+        ReflectionTestUtils.setField(senhaService, "restTemplate", restTemplate);
+        ReflectionTestUtils.setField(senhaService, "urlSrv", "http://localhost:8080/");
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        staticHttpHeaderUtil.close();
+        mocks.close();
     }
 
     @Test
-    @DisplayName("Deve trocar senha com sucesso")
-    void trocarSenhaComSucesso() throws NoSuchFieldException, IllegalAccessException {
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.singletonList("Authorization")));
-        when(request.getHeader("Authorization")).thenReturn("Bearer token");
-        when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
+    void redefinirSenha_shouldCallRestTemplate() {
+        CodigoValidacao codigo = mock(CodigoValidacao.class);
+        ResponseEntity<String> expected = ResponseEntity.ok("ok");
 
-        CodigoValidacao mockResponse = Mockito.mock(CodigoValidacao.class);
-        HttpEntity<UsuarioDto> entity = new HttpEntity<>(headers);
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/redefine-senha"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class)
+        )).thenReturn(expected);
 
-        when(restTemplate.exchange("http://localhost:8080/senha/redefinir", HttpMethod.POST, entity, String.class)).thenReturn(new ResponseEntity<>("codigo", HttpStatus.OK));
+        ResponseEntity<String> result = senhaService.redefinirSenha(codigo, request);
 
-        Field field = SenhaService.class.getDeclaredField("restTemplate");
-        field.setAccessible(true);
-        field.set(service, restTemplate);
-
-        service.redefinirSenha(mockResponse, request);
+        assertEquals(expected, result);
     }
 
     @Test
-    @DisplayName("Deve enviar codigo com sucesso")
-    void enviarCodigoComSucesso() throws NoSuchFieldException, IllegalAccessException {
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.singletonList("Authorization")));
-        when(request.getHeader("Authorization")).thenReturn("Bearer token");
-        when(httpHeaderUtil.copyHeaders(request)).thenReturn(headers);
+    void enviarCodigo_shouldCallRestTemplate() {
+        EmailRequest email = mock(EmailRequest.class);
+        ResponseEntity<String> expected = ResponseEntity.ok("sent");
 
-        EmailRequest mockResponse = Mockito.mock(EmailRequest.class);
-        HttpEntity<UsuarioDto> entity = new HttpEntity<>(headers);
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/send-email"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class)
+        )).thenReturn(expected);
 
-        when(restTemplate.exchange("http://localhost:8080/senha/enviar-codigo", HttpMethod.POST, entity, String.class)).thenReturn(new ResponseEntity<>("codigo", HttpStatus.OK));
+        ResponseEntity<String> result = senhaService.enviarCodigo(email, request);
 
-        Field field = SenhaService.class.getDeclaredField("restTemplate");
-        field.setAccessible(true);
-        field.set(service, restTemplate);
-
-        service.enviarCodigo(mockResponse, request);
+        assertEquals(expected, result);
     }
 }

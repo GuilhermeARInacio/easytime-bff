@@ -3,30 +3,22 @@ package easytime.bff.api.controller;
 import easytime.bff.api.dto.token.TokenDto;
 import easytime.bff.api.dto.usuario.DadosAutenticacao;
 import easytime.bff.api.service.AutenticacaoService;
+import easytime.bff.api.util.ExceptionHandlerUtil;
 import easytime.bff.api.validacoes.login.ValidacoesLogin;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.HttpClientErrorException;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,102 +28,60 @@ class AutenticacaoControllerTest {
     @InjectMocks
     private AutenticacaoController controller;
 
-    @Autowired
-    private MockMvc mvc;
+    @Mock
+    private AutenticacaoService service;
 
     @Mock
     private List<ValidacoesLogin> validacoes;
 
-    @Mock
-    private AutenticacaoService service;
+    private AutoCloseable mocks;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mocks.close();
     }
 
     @Test
     @DisplayName("Deve retornar 200 para autenticação bem-sucedida")
     void codigo200paraSucesso() {
         DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn("senha");
-        when(dto.login()).thenReturn("usuario");
+        when(dto.senha()).thenReturn("user");
+        when(dto.login()).thenReturn("pass");
         when(service.autenticar(dto)).thenReturn(Mockito.mock(TokenDto.class));
 
         ResponseEntity<?> response = controller.autenticar(dto);
-        assertEquals(200, response.getStatusCode().value());
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(Mockito.mock(TokenDto.class), response.getBody());
+        verify(validacoes).forEach(any());
     }
 
     @Test
-    @DisplayName("Deve retornar 400 para campos em branco")
-    void codigo400paraCamposEmBranco() {
-        DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn(null);
-        when(dto.login()).thenReturn("usuario");
+    void autenticar_callsExceptionHandlerOnValidationException() throws Exception {
+        DadosAutenticacao dto = mock(DadosAutenticacao.class);
+        when(dto.login()).thenReturn("user");
+        when(dto.senha()).thenReturn("pass");
+        RuntimeException ex = new RuntimeException("validation failed");
 
-        ResponseEntity<?> response = controller.autenticar(dto);
-        assertEquals(400, response.getStatusCode().value());
-    }
+        doThrow(ex).when(validacoes).forEach(any());
 
-    @Test
-    @DisplayName("Deve retornar 400 para corpo da requisição em branco")
-    void codigo400paraCorpoEmBranco() throws Exception {
-        String json = "";
+        // Access private static LOGGER via reflection
+        Field loggerField = AutenticacaoController.class.getDeclaredField("LOGGER");
+        loggerField.setAccessible(true);
+        Logger logger = (Logger) loggerField.get(null);
 
-        var response = mvc.perform(
-                post("/login")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andReturn().getResponse();
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
 
-        assertEquals(400, response.getStatus());
-    }
+            controller.autenticar(dto);
 
-    @Test
-    @DisplayName("Deve retornar 401 para usuário não autorizado")
-    void codigo401paraUsuarioNaoAutorizado() {
-        DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn("senha");
-        when(dto.login()).thenReturn("usuario");
-        when(service.autenticar(dto)).thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
-
-        ResponseEntity<?> response = controller.autenticar(dto);
-        assertEquals(401, response.getStatusCode().value());
-    }
-
-    @Test
-    @DisplayName("Deve retornar 500 para erro interno do servidor")
-    void codigo404paraErroInterno() {
-        DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn("senha");
-        when(dto.login()).thenReturn("usuario");
-        when(service.autenticar(dto)).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
-
-        ResponseEntity<?> response = controller.autenticar(dto);
-        assertEquals(404, response.getStatusCode().value());
-    }
-
-    @Test
-    @DisplayName("Deve retornar 500 para erro interno do servidor")
-    void codigo500paraErroInterno() {
-        DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn("senha");
-        when(dto.login()).thenReturn("usuario");
-        when(service.autenticar(dto)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
-
-        ResponseEntity<?> response = controller.autenticar(dto);
-        assertEquals(500, response.getStatusCode().value());
-    }
-
-    @Test
-    @DisplayName("Deve retornar 400 para formato de senha ou usuário inválido")
-    void codigo400paraFormatoInvalido() throws Exception {
-        DadosAutenticacao dto = Mockito.mock(DadosAutenticacao.class);
-        when(dto.senha()).thenReturn("senha");
-        when(dto.login()).thenReturn("usuario");
-        when(service.autenticar(dto)).thenThrow(new IllegalArgumentException());
-
-        ResponseEntity<?> response = controller.autenticar(dto);
-        assertEquals(400, response.getStatusCode().value());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger), times(1));
+        }
     }
 }

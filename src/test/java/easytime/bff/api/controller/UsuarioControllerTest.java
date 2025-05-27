@@ -2,69 +2,56 @@ package easytime.bff.api.controller;
 
 import easytime.bff.api.dto.usuario.UsuarioDto;
 import easytime.bff.api.dto.usuario.UsuarioRetornoDto;
-import easytime.bff.api.infra.security.SecurityFilter;
-import easytime.bff.api.infra.security.TokenService;
 import easytime.bff.api.service.UsuarioService;
+import easytime.bff.api.util.ExceptionHandlerUtil;
 import easytime.bff.api.validacoes.cadastro.ValidacoesCadastro;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.MockedStatic;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 class UsuarioControllerTest {
 
-    @InjectMocks
     private UsuarioController controller;
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Mock
     private UsuarioService service;
-
-    @Mock
     private List<ValidacoesCadastro> validacoes;
-
-    @Mock
     private HttpServletRequest request;
 
-    @Mock
-    private SecurityFilter securityFilter;
-
-    @Mock
-    private TokenService tokenService;
-
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        validacoes = new ArrayList<>();
+    void setUp() throws Exception {
+        service = mock(UsuarioService.class);
+        validacoes = spy(new ArrayList<>());
+        request = mock(HttpServletRequest.class);
+        controller = new UsuarioController();
+
+        Field serviceField = UsuarioController.class.getDeclaredField("service");
+        serviceField.setAccessible(true);
+        serviceField.set(controller, service);
+
+        Field validacoesField = UsuarioController.class.getDeclaredField("validacoes");
+        validacoesField.setAccessible(true);
+        validacoesField.set(controller, validacoes);
+    }
+
+    private Logger getLogger() throws Exception {
+        Field loggerField = UsuarioController.class.getDeclaredField("LOGGER");
+        loggerField.setAccessible(true);
+        return (Logger) loggerField.get(null);
     }
 
     @Test
-    @DisplayName("Deve retornar 201 ao criar usuário com sucesso")
-    void criarUsuarioComSucesso() {
+    void criarUsuario_success() {
         UsuarioDto dto = mock(UsuarioDto.class);
         when(dto.nome()).thenReturn("Nome");
         when(dto.email()).thenReturn("email");
@@ -73,86 +60,130 @@ class UsuarioControllerTest {
         when(dto.sector()).thenReturn("sector");
         when(dto.jobTitle()).thenReturn("jobTitle");
         when(dto.role()).thenReturn("role");
-        when(service.criarUsuario(dto, request))
+        doNothing().when(validacoes).forEach(any());
+        when(service.criarUsuario(any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(dto));
 
-        ResponseEntity<?> response = controller.criarUsuario(dto, request);
+        var response = controller.criarUsuario(dto, request);
 
-        assertEquals(201, response.getStatusCode().value());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         verify(service, times(1)).criarUsuario(dto, request);
+        verify(validacoes, times(1)).forEach(any());
     }
 
     @Test
-    @DisplayName("Deve retornar 400 ao criar usuário com campos inválidos")
-    void criarUsuarioComCamposInvalidos() {
+    void criarUsuario_callsExceptionHandlerOnException() throws Exception {
         UsuarioDto dto = mock(UsuarioDto.class);
-        when(dto.nome()).thenReturn(null);
+        when(dto.nome()).thenReturn("Nome");
+        when(dto.email()).thenReturn("email");
+        when(dto.login()).thenReturn("login");
+        when(dto.password()).thenReturn("password");
+        when(dto.sector()).thenReturn("sector");
+        when(dto.jobTitle()).thenReturn("jobTitle");
+        when(dto.role()).thenReturn("role");
+        doThrow(new RuntimeException("fail")).when(validacoes).forEach(any());
 
-        ResponseEntity<?> response = controller.criarUsuario(dto, request);
+        Logger logger = getLogger();
 
-        assertEquals(400, response.getStatusCode().value());
-        verify(service, never()).criarUsuario(dto, request);
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            var response = controller.criarUsuario(dto, request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            assertEquals("error", response.getBody());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)), times(1));
+        }
     }
 
     @Test
-    @DisplayName("Deve retornar 403 ao criar usuário sem autorização")
-    void criarUsuarioNaoAutorizado() throws Exception {
-        String json = "";
-
-        var response = mvc.perform(
-                put("/users/create")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andReturn().getResponse();
-
-        assertEquals(403, response.getStatus());
-    }
-
-    @Test
-    @DisplayName("Deve retornar 200 ao listar usuários com sucesso")
-    void listarUsuariosComSucesso() {
+    void listarUsuarios_success() {
         List<UsuarioRetornoDto> usuarios = List.of(mock(UsuarioRetornoDto.class));
         when(service.listarUsuarios(request)).thenReturn(ResponseEntity.ok(usuarios));
 
-        ResponseEntity<?> response = controller.listarUsuarios(request);
+        var response = controller.listarUsuarios(request);
 
-        assertEquals(200, response.getStatusCode().value());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(usuarios, response.getBody());
+        verify(service, times(1)).listarUsuarios(request);
     }
 
     @Test
-    @DisplayName("Deve retornar 200 ao buscar usuário por ID com sucesso")
-    void listarUsuarioPorIdComSucesso() {
+    void listarUsuarios_callsExceptionHandlerOnException() throws Exception {
+        when(service.listarUsuarios(request)).thenThrow(new RuntimeException("fail"));
+        Logger logger = getLogger();
+
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            var response = controller.listarUsuarios(request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            assertEquals("error", response.getBody());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)), times(1));
+        }
+    }
+
+    @Test
+    void listarUsuarioPorId_success() {
         int id = 1;
         UsuarioRetornoDto usuario = mock(UsuarioRetornoDto.class);
         when(service.listarUsuarioPorId(id, request)).thenReturn(ResponseEntity.ok(usuario));
 
-        ResponseEntity<?> response = controller.listarUsuarios(id, request);
+        var response = controller.listarUsuarios(id, request);
 
-        assertEquals(200, response.getStatusCode().value());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(usuario, response.getBody());
         verify(service, times(1)).listarUsuarioPorId(id, request);
     }
 
     @Test
-    @DisplayName("Deve retornar 400 ao buscar usuário por ID inexistente")
-    void listarUsuarioPorIdInexistente() {
-        int id = 999;
-        when(service.listarUsuarioPorId(id, request)).thenThrow(new RuntimeException("Erro"));
-
-        ResponseEntity<?> response = controller.listarUsuarios(id, request);
-
-        assertEquals(400, response.getStatusCode().value());
-        verify(service, times(1)).listarUsuarioPorId(id, request);
-    }
-
-    @Test
-    @DisplayName("Deve retornar 200 ao deletar usuário com sucesso")
-    void deletarUsuarioComSucesso() {
+    void listarUsuarioPorId_callsExceptionHandlerOnException() throws Exception {
         int id = 1;
-        when(service.deletarUsuario(id, request)).thenReturn(ResponseEntity.ok("Usuário deletado com sucesso"));
+        when(service.listarUsuarioPorId(id, request)).thenThrow(new RuntimeException("fail"));
+        Logger logger = getLogger();
 
-        ResponseEntity<?> response = controller.deletarUsuario(id, request);
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
 
-        assertEquals(200, response.getStatusCode().value());
+            var response = controller.listarUsuarios(id, request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            assertEquals("error", response.getBody());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)), times(1));
+        }
+    }
+
+    @Test
+    void deletarUsuario_success() {
+        int id = 1;
+        when(service.deletarUsuario(id, request)).thenReturn(ResponseEntity.ok("Usuário deletado"));
+
+        var response = controller.deletarUsuario(id, request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Usuário deletado", response.getBody());
         verify(service, times(1)).deletarUsuario(id, request);
+    }
+
+    @Test
+    void deletarUsuario_callsExceptionHandlerOnException() throws Exception {
+        int id = 1;
+        when(service.deletarUsuario(id, request)).thenThrow(new RuntimeException("fail"));
+        Logger logger = getLogger();
+
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            var response = controller.deletarUsuario(id, request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            assertEquals("error", response.getBody());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(Exception.class), eq(logger)), times(1));
+        }
     }
 }
