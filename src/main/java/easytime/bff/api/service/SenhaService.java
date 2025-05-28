@@ -21,21 +21,17 @@ public class SenhaService {
     @Value("${SRV_URL}")
     private String urlSrv;
 
-    public ResponseEntity<String> redefinirSenha(CodigoValidacao codigo, HttpServletRequest request) {
-
+    public ResponseEntity<String> redefinirSenha(CodigoValidacao codigo) {
         String url = urlSrv + "redefine-senha";
-        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-        HttpEntity<CodigoValidacao> entity = new HttpEntity<>(codigo, headers);
+        HttpEntity<CodigoValidacao> entity = new HttpEntity<>(codigo);
         return restTemplate.exchange(url, POST, entity, String.class);
     }
 
-    public ResponseEntity<String> enviarCodigo(EmailRequest email, HttpServletRequest request) {
-
+    public ResponseEntity<String> enviarCodigo(EmailRequest email) {
         String url = urlSrv + "send-email";
-        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-        HttpEntity<EmailRequest> entity = new HttpEntity<>(email, headers);
+        HttpEntity<EmailRequest> entity = new HttpEntity<>(email);
         return restTemplate.exchange(url, POST, entity, String.class);
     }
 }

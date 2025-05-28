@@ -46,10 +46,10 @@ class SenhaControllerTest {
     void redefinirSenha_success() {
         CodigoValidacao dto = mock(CodigoValidacao.class);
         when(dto.email()).thenReturn("user@email.com");
-        when(service.redefinirSenha(any(), any()))
+        when(service.redefinirSenha(any()))
                 .thenReturn(ResponseEntity.ok("Senha redefinida"));
 
-        var response = controller.redefinirSenha(dto, request);
+        var response = controller.redefinirSenha(dto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Senha redefinida", response.getBody());
@@ -60,7 +60,7 @@ class SenhaControllerTest {
         CodigoValidacao dto = mock(CodigoValidacao.class);
         when(dto.email()).thenReturn("user@email.com");
         RuntimeException ex = new RuntimeException("fail");
-        when(service.redefinirSenha(any(), any())).thenThrow(ex);
+        when(service.redefinirSenha(any())).thenThrow(ex);
 
         Logger logger = getLogger();
 
@@ -68,7 +68,7 @@ class SenhaControllerTest {
             staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger))
                     .thenReturn(ResponseEntity.status(500).body("error"));
 
-            var response = controller.redefinirSenha(dto, request);
+            var response = controller.redefinirSenha(dto);
 
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
             assertEquals("error", response.getBody());
@@ -80,10 +80,10 @@ class SenhaControllerTest {
     void enviarCodigo_success() {
         EmailRequest dto = mock(EmailRequest.class);
         when(dto.email()).thenReturn("user@email.com");
-        when(service.enviarCodigo(any(), any()))
+        when(service.enviarCodigo(any()))
                 .thenReturn(ResponseEntity.ok("Código enviado"));
 
-        var response = controller.enviarCodigo(dto, request);
+        var response = controller.enviarCodigo(dto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Código enviado", response.getBody());
@@ -94,7 +94,7 @@ class SenhaControllerTest {
         EmailRequest dto = mock(EmailRequest.class);
         when(dto.email()).thenReturn("user@email.com");
         RuntimeException ex = new RuntimeException("fail");
-        when(service.enviarCodigo(any(), any())).thenThrow(ex);
+        when(service.enviarCodigo(any())).thenThrow(ex);
 
         Logger logger = getLogger();
 
@@ -102,7 +102,7 @@ class SenhaControllerTest {
             staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(ex, logger))
                     .thenReturn(ResponseEntity.status(500).body("error"));
 
-            var response = controller.enviarCodigo(dto, request);
+            var response = controller.enviarCodigo(dto);
 
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
             assertEquals("error", response.getBody());
