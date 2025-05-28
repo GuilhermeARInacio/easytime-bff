@@ -3,14 +3,10 @@ package easytime.bff.api.validacoes.alterar_ponto;
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class ValidacaoHorarioInvalidoTest {
 

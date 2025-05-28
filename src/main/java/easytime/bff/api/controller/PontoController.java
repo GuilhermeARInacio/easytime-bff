@@ -110,20 +110,18 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> alterarPonto(@RequestBody AlterarPontoDto dto, HttpServletRequest request) {
+    public ResponseEntity<?> alterarPonto(@Valid @RequestBody AlterarPontoDto dto, HttpServletRequest request) {
         LOGGER.debug("Alterando ponto do usuário: {}", dto.login());
         try {
             ResponseEntity<?> response = service.alterarPonto(dto, request);
             LOGGER.info("Ponto alterado com sucesso para o usuário: {}", dto.login());
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+            return ResponseEntity.status(response.getStatusCode()).body("Registro de ponto atualizado com sucesso.");
         } catch (HttpClientErrorException.NotFound e){
             return ResponseEntity.status(404).body(e.getMessage());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException | DateTimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (HttpClientErrorException.Unauthorized e) {
             return ResponseEntity.status(401).body("Login inválido. Verifique os dados informados.");
-        } catch (DateTimeException e){
-            return ResponseEntity.badRequest().body("Data ou horário inválidos. Verifique os dados informados.");
         } catch (Exception e) {
             LOGGER.error("Erro ao alterar ponto para o usuário: {}", dto.login(), e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);

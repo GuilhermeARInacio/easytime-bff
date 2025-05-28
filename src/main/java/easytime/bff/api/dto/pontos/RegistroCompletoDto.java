@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public record RegistroCompletoDto (
         Integer id,
-        LocalDate data,
+        String data,
         Time horasTrabalhadas,
         Time entrada1,
         Time saida1,

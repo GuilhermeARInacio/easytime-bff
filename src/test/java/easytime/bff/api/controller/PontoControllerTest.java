@@ -281,7 +281,7 @@ class PontoControllerTest {
     void startRegistroCompleto() {
         registroCompleto = new RegistroCompletoDto(
                 1,
-                LocalDate.of(2024, 6, 10),
+                "",
                 Time.valueOf("08:00:00"),
                 Time.valueOf("08:00:00"),
                 Time.valueOf("12:00:00"),

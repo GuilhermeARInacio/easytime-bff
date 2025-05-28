@@ -1,9 +1,11 @@
 package easytime.bff.api.service;
 
+import easytime.bff.api.dto.pontos.AlterarPonto;
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.dto.pontos.RegistroCompletoDto;
 import easytime.bff.api.dto.usuario.LoginDto;
+import easytime.bff.api.infra.security.TokenService;
 import easytime.bff.api.util.HttpHeaderUtil;
 import easytime.bff.api.validacoes.alterar_ponto.ValidacaoAlterarPonto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +26,9 @@ import static org.springframework.http.HttpMethod.*;
 public class PontoService {
 
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    private TokenService tokenService;
 
     @Value("${SRV_URL}")
     private String urlSrv;
@@ -57,8 +62,13 @@ public class PontoService {
 
     public ResponseEntity<RegistroCompletoDto> alterarPonto(AlterarPontoDto dto, HttpServletRequest request) {
         String url = urlSrv + "ponto/alterar";
+
+        var token = HttpHeaderUtil.getToken(request);
+        var login = tokenService.getLogin(token);
+        var dtoAlterar = new AlterarPonto(login, dto);
+
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-        HttpEntity<AlterarPontoDto> entity = new HttpEntity<>(dto, headers);
+        HttpEntity<AlterarPonto> entity = new HttpEntity<>(dtoAlterar, headers);
 
         validacoes.forEach(validacao -> validacao.validar(dto));
 
