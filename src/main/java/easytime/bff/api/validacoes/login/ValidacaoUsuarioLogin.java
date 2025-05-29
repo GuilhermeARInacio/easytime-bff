@@ -9,8 +9,5 @@ public class ValidacaoUsuarioLogin implements ValidacoesLogin {
         if(dto.login().isEmpty() || dto.login().isBlank()) {
             throw new RuntimeException("O usuário não pode ser vazio");
         }
-        if(!dto.login().matches(".*[a-zA-Z].*")) {
-            throw new IllegalArgumentException("Formato do usuário inválido");
-        }
     }
 }
