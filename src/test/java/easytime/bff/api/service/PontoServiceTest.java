@@ -2,6 +2,7 @@ package easytime.bff.api.service;
 
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
+import easytime.bff.api.dto.pontos.PedidoPonto;
 import easytime.bff.api.dto.pontos.RegistroCompletoDto;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.util.HttpHeaderUtil;
@@ -70,7 +71,7 @@ class PontoServiceTest {
                 eq(Object.class)
         )).thenReturn(expected);
 
-        ResponseEntity<Object> result = pontoService.registrarPonto(loginDto, request);
+        ResponseEntity<Object> result = pontoService.registrarPonto(request);
 
         assertEquals(expected, result);
     }
@@ -111,8 +112,7 @@ class PontoServiceTest {
     @Test
     void alterarPonto_shouldValidateAndCallRestTemplate() {
         AlterarPontoDto dto = mock(AlterarPontoDto.class);
-        RegistroCompletoDto registro = mock(RegistroCompletoDto.class);
-        ResponseEntity<RegistroCompletoDto> expected = ResponseEntity.ok(registro);
+        ResponseEntity<String> expected = ResponseEntity.ok("");
 
         doNothing().when(validacaoAlterarPonto).validar(dto);
 
@@ -120,10 +120,10 @@ class PontoServiceTest {
                 eq("http://localhost:8080/ponto/alterar"),
                 eq(HttpMethod.PUT),
                 any(HttpEntity.class),
-                eq(RegistroCompletoDto.class)
+                eq(String.class)
         )).thenReturn(expected);
 
-        ResponseEntity<RegistroCompletoDto> result = pontoService.alterarPonto(dto, request);
+        ResponseEntity<String> result = pontoService.alterarPonto(dto, request);
 
         assertEquals(expected, result);
         verify(validacaoAlterarPonto).validar(dto);
@@ -142,6 +142,74 @@ class PontoServiceTest {
         )).thenReturn(expected);
 
         ResponseEntity<List<RegistroCompletoDto>> result = pontoService.listarPontos(request);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void listarPedidos_shouldCallRestTemplate() {
+        var pedido = mock(PedidoPonto.class);
+        List<PedidoPonto> pedidos = List.of(pedido);
+        ResponseEntity<List<PedidoPonto>> expected = ResponseEntity.ok(pedidos);
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/pedidos/all"),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                ArgumentMatchers.<ParameterizedTypeReference<List<PedidoPonto>>>any()
+        )).thenReturn(expected);
+
+        ResponseEntity<List<PedidoPonto>> result = pontoService.listarPedidos(request);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void listarPedidosPendentes_shouldCallRestTemplate() {
+        var pedido = mock(PedidoPonto.class);
+        List<PedidoPonto> pedidos = List.of(pedido);
+        ResponseEntity<List<PedidoPonto>> expected = ResponseEntity.ok(pedidos);
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/pedidos/pendentes"),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                ArgumentMatchers.<ParameterizedTypeReference<List<PedidoPonto>>>any()
+        )).thenReturn(expected);
+
+        ResponseEntity<List<PedidoPonto>> result = pontoService.listarPedidosPendentes(request);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void aprovarPonto_shouldCallRestTemplate() {
+        ResponseEntity<String> expected = ResponseEntity.ok("aprovado");
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/aprovar/1"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class)
+        )).thenReturn(expected);
+
+        ResponseEntity<String> result = pontoService.aprovarPonto(1, request);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void reprovarPonto_shouldCallRestTemplate() {
+        ResponseEntity<String> expected = ResponseEntity.ok("reprovado");
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/reprovar/1"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class)
+        )).thenReturn(expected);
+
+        ResponseEntity<String> result = pontoService.reprovarPonto(1, request);
 
         assertEquals(expected, result);
     }

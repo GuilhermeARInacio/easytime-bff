@@ -1,6 +1,8 @@
 package easytime.bff.api.util;
 
+import easytime.bff.api.infra.security.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +10,9 @@ import java.util.Enumeration;
 
 @Component
 public class HttpHeaderUtil {
+
+    @Autowired
+    private TokenService tokenService;
 
     public static HttpHeaders copyHeaders(HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
@@ -26,4 +31,5 @@ public class HttpHeaderUtil {
 
         return headers;
     }
+
 }

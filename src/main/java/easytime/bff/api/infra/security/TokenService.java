@@ -25,4 +25,14 @@ public class TokenService {
             return false;
         }
     }
+
+    public String getLogin(String tokenJWT) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            DecodedJWT decodedJwt = JWT.require(algorithm).build().verify(tokenJWT);
+            return decodedJwt.getSubject();
+        } catch (JWTVerificationException e) {
+            throw new IllegalArgumentException("Token inválido ou expirado.");
+        }
+    }
 }
