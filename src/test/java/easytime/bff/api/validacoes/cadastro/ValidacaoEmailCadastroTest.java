@@ -10,40 +10,33 @@ import org.springframework.test.context.TestPropertySource;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@TestPropertySource(properties = {
-        "SRV_URL=http://localhost:8080"
-})
 class ValidacaoEmailCadastroTest {
+
+    private final ValidacaoEmailCadastro validacaoEmailCadastro = new ValidacaoEmailCadastro();
     @Test
     @DisplayName("Deve validar email com sucesso")
     void deveValidarEmailComSucesso() {
-        ValidacaoEmailCadastro validacao = new ValidacaoEmailCadastro();
         String emailValido = "email@gmail.com";
-        assertDoesNotThrow(() -> validacao.validar(new UsuarioDto("nome", emailValido, "login", "senha@123", "sector", "job", "role", true)));
+        assertDoesNotThrow(() -> validacaoEmailCadastro.validar(new UsuarioDto("nome", emailValido, "login", "senha@123", "sector", "job", "role", true)));
     }
 
     @Test
     @DisplayName("Deve dar erro com email vazio")
     void deveDarErroComEmailVazio() {
-        ValidacaoEmailCadastro validacao = new ValidacaoEmailCadastro();
-        assertThrows(IllegalArgumentException.class, () -> validacao.validar(new UsuarioDto("nome", "", "login", "senha@123", "sector", "job", "role", true)));
+        assertThrows(IllegalArgumentException.class, () -> validacaoEmailCadastro.validar(new UsuarioDto("nome", "", "login", "senha@123", "sector", "job", "role", true)));
     }
 
     @Test
     @DisplayName("Deve dar erro com email sem @")
     void deveDarErroComEmailSemArroba() {
-        ValidacaoEmailCadastro validacao = new ValidacaoEmailCadastro();
         String emailInvalido = "email.com";
-        assertThrows(IllegalArgumentException.class, () -> validacao.validar(new UsuarioDto("nome", emailInvalido, "login", "senha@123", "sector", "job", "role", true)));
+        assertThrows(IllegalArgumentException.class, () -> validacaoEmailCadastro.validar(new UsuarioDto("nome", emailInvalido, "login", "senha@123", "sector", "job", "role", true)));
     }
 
     @Test
     @DisplayName("Deve dar erro de email sem final valido")
     void deveDarErroComFinalInvalido() {
-        ValidacaoEmailCadastro validacao = new ValidacaoEmailCadastro();
         String emailInvalido = "email@gmail";
-        assertThrows(IllegalArgumentException.class, () -> validacao.validar(new UsuarioDto("nome", emailInvalido, "login", "senha@123", "sector", "job", "role", true)));
+        assertThrows(IllegalArgumentException.class, () -> validacaoEmailCadastro.validar(new UsuarioDto("nome", emailInvalido, "login", "senha@123", "sector", "job", "role", true)));
     }
 }

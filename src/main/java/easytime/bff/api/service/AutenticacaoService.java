@@ -20,15 +20,9 @@ public class AutenticacaoService {
     private String urlSrv;
 
     public TokenDto autenticar(DadosAutenticacao usuario) throws HttpMessageNotReadableException {
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            RestTemplate restTemplate = new RestTemplate();
-            String url = urlSrv + "login";
-            TokenDto response = restTemplate.postForObject(url, usuario, TokenDto.class);
+        RestTemplate restTemplate = new RestTemplate();
+        String url = urlSrv + "login";
 
-            return response;
-        } catch (Exception e) {
-            throw e;
-        }
+        return restTemplate.postForObject(url, usuario, TokenDto.class);
     }
 }

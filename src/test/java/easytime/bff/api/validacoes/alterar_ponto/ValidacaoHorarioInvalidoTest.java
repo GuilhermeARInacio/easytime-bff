@@ -14,8 +14,7 @@ class ValidacaoHorarioInvalidoTest {
 
     @Test
     void validar_devePermitirHorariosValidosOuNulos() {
-        AlterarPontoDto dto = new AlterarPontoDto(
-                "usuario1",                // login
+        AlterarPontoDto dto = new AlterarPontoDto(// login
                 123,                       // idPonto
                 "2024-06-10",              // data (must be yyyy-MM-dd)
                 LocalTime.of(8, 0),        // entrada1
@@ -30,8 +29,7 @@ class ValidacaoHorarioInvalidoTest {
 
     @Test
     void validar_deveLancarExcecaoParaHorarioAntesDas6() {
-        AlterarPontoDto dto = new AlterarPontoDto(
-                "usuario1",                // login
+        AlterarPontoDto dto = new AlterarPontoDto(// login
                 123,                       // idPonto
                 "2024-06-10",              // data (must be yyyy-MM-dd)
                 LocalTime.of(5, 59),        // entrada1
@@ -47,8 +45,7 @@ class ValidacaoHorarioInvalidoTest {
 
     @Test
     void validar_deveLancarExcecaoParaHorarioDepoisDas23() {
-        AlterarPontoDto dto = new AlterarPontoDto(
-                "usuario1",                // login
+        AlterarPontoDto dto = new AlterarPontoDto(// login
                 123,                       // idPonto
                 "2024-06-10",              // data (must be yyyy-MM-dd)
                 LocalTime.of(23, 1),        // entrada1

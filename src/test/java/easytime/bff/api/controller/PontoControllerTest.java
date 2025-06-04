@@ -1,9 +1,6 @@
 package easytime.bff.api.controller;
 
-import easytime.bff.api.dto.pontos.AlterarPontoDto;
-import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
-import easytime.bff.api.dto.pontos.RegistroCompletoDto;
-import easytime.bff.api.dto.pontos.Status;
+import easytime.bff.api.dto.pontos.*;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.service.PontoService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
@@ -18,8 +15,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.lang.reflect.Field;
 import java.sql.Time;
-import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,11 +45,11 @@ class PontoControllerTest {
         // Arrange
         LoginDto loginDto = new LoginDto("");
 
-        when(pontoService.registrarPonto(any(), any()))
+        when(pontoService.registrarPonto(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(""));
 
         // Act
-        var response = pontoController.registrarPonto(loginDto, request);
+        var response = pontoController.registrarPonto(request);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -66,7 +61,7 @@ class PontoControllerTest {
         LoginDto loginDto = new LoginDto(""); // LoginDto vazio
 
         // Act
-        var response = pontoController.registrarPonto(loginDto, request);
+        var response = pontoController.registrarPonto(request);
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -111,7 +106,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_Success() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("user", "2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(Mockito.mock(RegistroCompletoDto.class))));
@@ -125,7 +120,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_InvalidLogin() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("", "2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
 
         // Act
         var response = pontoController.consultaPonto(dto, request);
@@ -136,7 +131,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_ClientException() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("user", "2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenThrow(HttpClientErrorException.NotFound.class);
@@ -150,7 +145,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_Exception() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("user", "2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenThrow(new RuntimeException(""));
@@ -164,7 +159,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaUsuarioNaoEncontrado() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("user", "2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenThrow(HttpClientErrorException.Unauthorized.class);
@@ -179,9 +174,8 @@ class PontoControllerTest {
     @Test
     void testAlterarPonto_Success() {
         AlterarPontoDto dto = mock(AlterarPontoDto.class);
-        when(dto.login()).thenReturn("user");
         when(pontoService.alterarPonto(any(), any()))
-                .thenReturn(ResponseEntity.ok().body(registroCompleto));
+                .thenReturn(ResponseEntity.ok().body(""));
 
         ResponseEntity<?> response = pontoController.alterarPonto(dto, request);
 
@@ -191,7 +185,6 @@ class PontoControllerTest {
     @Test
     void testAlterarPonto_NotFound() {
         AlterarPontoDto dto = mock(AlterarPontoDto.class);
-        when(dto.login()).thenReturn("user");
         when(pontoService.alterarPonto(any(), any()))
                 .thenThrow(HttpClientErrorException.NotFound.class);
 
@@ -203,7 +196,6 @@ class PontoControllerTest {
     @Test
     void testAlterarPonto_BadRequest() {
         AlterarPontoDto dto = mock(AlterarPontoDto.class);
-        when(dto.login()).thenReturn("user");
         when(pontoService.alterarPonto(any(), any()))
                 .thenThrow(new IllegalArgumentException("Invalid"));
 
@@ -215,7 +207,6 @@ class PontoControllerTest {
     @Test
     void testAlterarPonto_Unauthorized() {
         AlterarPontoDto dto = mock(AlterarPontoDto.class);
-        when(dto.login()).thenReturn("user");
         when(pontoService.alterarPonto(any(), any()))
                 .thenThrow(HttpClientErrorException.Unauthorized.class);
 
@@ -225,33 +216,21 @@ class PontoControllerTest {
     }
 
     @Test
-    void testAlterarPonto_DateTimeException() {
-        AlterarPontoDto dto = mock(AlterarPontoDto.class);
-        when(dto.login()).thenReturn("user");
-        when(pontoService.alterarPonto(any(), any()))
-                .thenThrow(DateTimeException.class);
-
-        ResponseEntity<?> response = pontoController.alterarPonto(dto, request);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-
-    @Test
-    void testGetPontos_Success() {
+    void testListarAllPontos_Success() {
         when(pontoService.listarPontos(any()))
                 .thenReturn(ResponseEntity.ok().body(List.of(registroCompleto)));
 
-        ResponseEntity<?> response = pontoController.getPontos(request);
+        ResponseEntity<?> response = pontoController.listarAllPontos(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    void testGetPontos_Exception() {
+    void testListarAllPontos_Exception() {
         when(pontoService.listarPontos(any()))
                 .thenThrow(new RuntimeException("Erro"));
 
-        ResponseEntity<?> response = pontoController.getPontos(request);
+        ResponseEntity<?> response = pontoController.listarAllPontos(request);
 
         assertNotNull(response);
       }
@@ -259,7 +238,6 @@ class PontoControllerTest {
     @Test
     void testAlterarPonto_ExceptionHandlerIsCalled() throws Exception {
         AlterarPontoDto dto = mock(AlterarPontoDto.class);
-        when(dto.login()).thenReturn("user");
         RuntimeException ex = new RuntimeException("any error");
         when(pontoService.alterarPonto(any(), any())).thenThrow(ex);
 
@@ -278,9 +256,128 @@ class PontoControllerTest {
         }
     }
 
+    @Test
+    void testListarAllPedidos_Success() {
+        var pedido = mock(PedidoPonto.class);
+        when(pontoService.listarPedidos(any()))
+                .thenReturn(ResponseEntity.ok().body(List.of(pedido)));
+
+        ResponseEntity<?> response = pontoController.listarAllPedidos(request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    // listarAllPedidos - Exception
+    @Test
+    void testListarAllPedidos_Exception() {
+        when(pontoService.listarPedidos(any()))
+                .thenThrow(new RuntimeException("Erro"));
+
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            ResponseEntity<?> response = pontoController.listarAllPedidos(request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
+        }
+    }
+
+    // listarPedidosPendentes - Success
+    @Test
+    void testListarPedidosPendentes_Success() {
+        var pedido = mock(PedidoPonto.class);
+        when(pontoService.listarPedidosPendentes(any()))
+                .thenReturn(ResponseEntity.ok().body(List.of(pedido)));
+
+        ResponseEntity<?> response = pontoController.listarPedidosPendentes(request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    // listarPedidosPendentes - Exception
+    @Test
+    void testListarPedidosPendentes_Exception() {
+        when(pontoService.listarPedidosPendentes(any()))
+                .thenThrow(new RuntimeException("Erro"));
+
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            ResponseEntity<?> response = pontoController.listarPedidosPendentes(request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
+        }
+    }
+
+    // aprovarPonto - Success
+    @Test
+    void testAprovarPonto_Success() {
+        when(pontoService.aprovarPonto(anyInt(), any()))
+                .thenReturn(ResponseEntity.ok().body("aprovado"));
+
+        ResponseEntity<?> response = pontoController.aprovarPonto(1, request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("aprovado", response.getBody());
+    }
+
+    // aprovarPonto - Exception
+    @Test
+    void testAprovarPonto_Exception() {
+        when(pontoService.aprovarPonto(anyInt(), any()))
+                .thenThrow(new RuntimeException("Erro"));
+
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            ResponseEntity<?> response = pontoController.aprovarPonto(1, request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
+        }
+    }
+
+    // reprovarPonto - Success
+    @Test
+    void testReprovarPonto_Success() {
+        when(pontoService.reprovarPonto(anyInt(), any()))
+                .thenReturn(ResponseEntity.ok().body("reprovado"));
+
+        ResponseEntity<?> response = pontoController.reprovarPonto(1, request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("reprovado", response.getBody());
+    }
+
+    // reprovarPonto - Exception
+    @Test
+    void testReprovarPonto_Exception() {
+        when(pontoService.reprovarPonto(anyInt(), any()))
+                .thenThrow(new RuntimeException("Erro"));
+
+        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
+                    .thenReturn(ResponseEntity.status(500).body("error"));
+
+            ResponseEntity<?> response = pontoController.reprovarPonto(1, request);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
+        }
+    }
+
+
     void startRegistroCompleto() {
         registroCompleto = new RegistroCompletoDto(
                 1,
+                "",
                 "",
                 Time.valueOf("08:00:00"),
                 Time.valueOf("08:00:00"),
