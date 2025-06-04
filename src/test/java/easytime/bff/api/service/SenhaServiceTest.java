@@ -57,7 +57,7 @@ class SenhaServiceTest {
                 eq(String.class)
         )).thenReturn(expected);
 
-        ResponseEntity<String> result = senhaService.redefinirSenha(codigo, request);
+        ResponseEntity<String> result = senhaService.redefinirSenha(codigo);
 
         assertEquals(expected, result);
     }
@@ -74,7 +74,7 @@ class SenhaServiceTest {
                 eq(String.class)
         )).thenReturn(expected);
 
-        ResponseEntity<String> result = senhaService.enviarCodigo(email, request);
+        ResponseEntity<String> result = senhaService.enviarCodigo(email);
 
         assertEquals(expected, result);
     }

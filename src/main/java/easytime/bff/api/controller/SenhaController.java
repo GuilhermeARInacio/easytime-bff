@@ -35,12 +35,11 @@ public class SenhaController {
             @ApiResponse(responseCode = "400", description = "Formato dos campos inválido ou campo vazio"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
-    @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> redefinirSenha(@Valid @RequestBody CodigoValidacao codigo, HttpServletRequest request) {
+    public ResponseEntity<?> redefinirSenha(@Valid @RequestBody CodigoValidacao codigo) {
         LOGGER.debug("Redefinindo senha para o usuário: {}", codigo.email());
         try{
             LOGGER.info("Redefinição de senha bem sucedida para o usuário com email: {}", codigo.email());
-            ResponseEntity<String> response = service.redefinirSenha(codigo, request);
+            ResponseEntity<String> response = service.redefinirSenha(codigo);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){
             LOGGER.error("Erro ao redefinir senha para o usuário: {}", codigo.email(), e);
@@ -55,12 +54,11 @@ public class SenhaController {
             @ApiResponse(responseCode = "400", description = "Formato dos campos inválido ou campo vazio"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
-    @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> enviarCodigo(@Valid @RequestBody EmailRequest email, HttpServletRequest request) {
+    public ResponseEntity<?> enviarCodigo(@Valid @RequestBody EmailRequest email) {
         LOGGER.debug("Enviando código para o usuário: {}", email.email());
         try{
             LOGGER.info("Envio de código bem sucedido para o usuário com email: {}", email.email());
-            ResponseEntity<String> response = service.enviarCodigo(email, request);
+            ResponseEntity<String> response = service.enviarCodigo(email);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e){
             LOGGER.error("Erro ao enviar código para o usuário: {}", email.email(), e);
