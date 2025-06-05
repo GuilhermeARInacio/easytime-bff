@@ -39,7 +39,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Formato dos campos inválido"),
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
-    public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioDto dto, HttpServletRequest request) {
+    public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto dto, HttpServletRequest request) {
         LOGGER.debug("Iniciando o cadastro para o usuário: {}", dto.login());
         try {
 
