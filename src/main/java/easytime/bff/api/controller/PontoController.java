@@ -117,7 +117,7 @@ public class PontoController {
             LOGGER.info("Ponto alterado com sucesso para o usuário");
             return ResponseEntity.status(response.getStatusCode()).body("Registro de ponto atualizado com sucesso.");
         } catch (HttpClientErrorException.NotFound e){
-            return ResponseEntity.status(404).body(e.getMessage());
+            return ResponseEntity.status(404).body("ID de ponto não localizado. Verifique se o código está correto.");
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (HttpClientErrorException.Unauthorized e) {
