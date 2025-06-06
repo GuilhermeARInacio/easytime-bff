@@ -27,4 +27,5 @@ replay_pid*
 .mvn
 .env
 .replit
+target/
 src/test/resources/application-test.properties

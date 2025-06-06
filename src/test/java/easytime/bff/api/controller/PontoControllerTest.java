@@ -44,12 +44,13 @@ class PontoControllerTest {
     void testRegistrarPonto_Success() {
         // Arrange
         LoginDto loginDto = new LoginDto("");
+        BaterPonto dto = new BaterPonto("08:00:00");
 
-        when(pontoService.registrarPonto(any()))
+        when(pontoService.registrarPonto(any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(""));
 
         // Act
-        var response = pontoController.registrarPonto(request);
+        var response = pontoController.registrarPonto(dto, request);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -59,9 +60,9 @@ class PontoControllerTest {
     void testRegistrarPonto_InvalidLogin() {
         // Arrange
         LoginDto loginDto = new LoginDto(""); // LoginDto vazio
-
+        BaterPonto dto = new BaterPonto("08:00:00");
         // Act
-        var response = pontoController.registrarPonto(request);
+        var response = pontoController.registrarPonto(dto, request);
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

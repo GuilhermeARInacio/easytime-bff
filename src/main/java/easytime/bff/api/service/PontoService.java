@@ -34,11 +34,11 @@ public class PontoService {
     @Autowired
     private List<ValidacaoAlterarPonto> validacoes;
 
-    public ResponseEntity<Object> registrarPonto(HttpServletRequest request) {
+    public ResponseEntity<Object> registrarPonto(BaterPonto dto, HttpServletRequest request) {
         String url = urlSrv + urlPonto;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
-        HttpEntity<LoginDto> entity = new HttpEntity<>(headers);
+        HttpEntity<BaterPonto> entity = new HttpEntity<>(dto, headers);
         return restTemplate.exchange(url, POST, entity, Object.class);
     }
 

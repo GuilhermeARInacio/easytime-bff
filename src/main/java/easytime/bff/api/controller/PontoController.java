@@ -1,6 +1,7 @@
 package easytime.bff.api.controller;
 
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
+import easytime.bff.api.dto.pontos.BaterPonto;
 import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
 import easytime.bff.api.service.PontoService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
@@ -37,10 +38,10 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> registrarPonto(HttpServletRequest request) {
+    public ResponseEntity<?> registrarPonto(@RequestBody BaterPonto dto, HttpServletRequest request) {
         LOGGER.debug("Registrando ponto para o usuário");
         try {
-            ResponseEntity<?> response = service.registrarPonto(request);
+            ResponseEntity<?> response = service.registrarPonto(dto, request);
             LOGGER.info("Ponto registrado para o usuário");
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {

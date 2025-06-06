@@ -1,9 +1,6 @@
 package easytime.bff.api.service;
 
-import easytime.bff.api.dto.pontos.AlterarPontoDto;
-import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
-import easytime.bff.api.dto.pontos.PedidoPonto;
-import easytime.bff.api.dto.pontos.RegistroCompletoDto;
+import easytime.bff.api.dto.pontos.*;
 import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.util.HttpHeaderUtil;
 import easytime.bff.api.validacoes.alterar_ponto.ValidacaoAlterarPonto;
@@ -63,6 +60,7 @@ class PontoServiceTest {
     @Test
     void registrarPonto_shouldCallRestTemplate() {
         LoginDto loginDto = new LoginDto("user");
+        BaterPonto dto = new BaterPonto("08:00:00");
         ResponseEntity<Object> expected = ResponseEntity.ok("ok");
         when(restTemplate.exchange(
                 eq("http://localhost:8080/ponto"),
@@ -71,7 +69,7 @@ class PontoServiceTest {
                 eq(Object.class)
         )).thenReturn(expected);
 
-        ResponseEntity<Object> result = pontoService.registrarPonto(request);
+        ResponseEntity<Object> result = pontoService.registrarPonto(dto, request);
 
         assertEquals(expected, result);
     }
