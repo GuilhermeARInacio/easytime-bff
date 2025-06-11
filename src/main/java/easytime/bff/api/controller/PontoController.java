@@ -83,15 +83,15 @@ public class PontoController {
             @ApiResponse(responseCode = "401", description = "Usuário não autorizado ou usuario não encontrado")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> consultaPonto(@Valid @RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
-        LOGGER.debug("Consultando pontos do usuário");
+    public ResponseEntity<?> consultaPonto(@RequestBody ConsultaPontoDTO dto, HttpServletRequest request) {
+        LOGGER.debug("Consultando pontos do usuário: {}", dto.login());
         
         try {
             var response = service.consultarPonto(dto, request);
-            LOGGER.info("Consulta de pontos bem sucedida do usuário");
+            LOGGER.info("Consulta de pontos bem sucedida do usuário: {}", dto.login());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpClientErrorException.NotFound e){
-            LOGGER.error("Não foram encontrados registros de ponto no período informado para o usuário");
+            LOGGER.error("Não foram encontrados registros de ponto no período informado para o usuário: {}", dto.login(), e);
             return ResponseEntity.status(404).body("Não foram encontrados registros de ponto no período informado.");
         } catch (HttpClientErrorException.Unauthorized e){
             LOGGER.error("Login inválido. Verifique os dados informados.", e);

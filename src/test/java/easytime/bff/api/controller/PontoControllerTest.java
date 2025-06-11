@@ -107,7 +107,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_Success() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(Mockito.mock(RegistroCompletoDto.class))));
@@ -121,7 +121,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_InvalidLogin() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "2023-01-01", "2023-01-31");
 
         // Act
         var response = pontoController.consultaPonto(dto, request);
@@ -132,7 +132,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_ClientException() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenThrow(HttpClientErrorException.NotFound.class);
@@ -146,7 +146,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaPonto_Exception() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenThrow(new RuntimeException(""));
@@ -160,7 +160,7 @@ class PontoControllerTest {
 
     @Test
     void testConsultaUsuarioNaoEncontrado() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("2023-01-01", "2023-01-31");
+        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "2023-01-01", "2023-01-31");
 
         when(pontoService.consultarPonto(dto, request))
                 .thenThrow(HttpClientErrorException.Unauthorized.class);

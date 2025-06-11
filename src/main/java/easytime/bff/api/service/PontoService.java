@@ -31,6 +31,7 @@ public class PontoService {
     private String urlSrv;
 
     private String urlPonto = "ponto";
+
     @Autowired
     private List<ValidacaoAlterarPonto> validacoes;
 
@@ -43,7 +44,7 @@ public class PontoService {
     }
 
     public ResponseEntity<String> deletarPonto(Integer id, HttpServletRequest request) {
-        String url = urlSrv +urlPonto + "/" + id;
+        String url = urlSrv + urlPonto + "/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), String.class);

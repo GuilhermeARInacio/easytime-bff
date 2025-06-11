@@ -43,11 +43,11 @@ public class AutenticacaoController {
     public ResponseEntity<?> autenticar(@Valid @RequestBody DadosAutenticacao dto) {
         LOGGER.debug("Iniciando autenticação para o usuário: {}", dto.login());
         try {
-
             validacoes.forEach(v -> v.validar(dto));
 
+            var response = service.autenticar(dto);
             LOGGER.info("Autenticação bem-sucedida para o usuário: {}", dto.login());
-            return ResponseEntity.ok(service.autenticar(dto));
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
