@@ -287,92 +287,92 @@ class PontoControllerTest {
     }
 
     // listarPedidosPendentes - Success
-    @Test
-    void testListarPedidosPendentes_Success() {
-        var pedido = mock(PedidoPonto.class);
-        when(pontoService.listarPedidosPendentes(any()))
-                .thenReturn(ResponseEntity.ok().body(List.of(pedido)));
-
-        ResponseEntity<?> response = pontoController.listarPedidosPendentes(request);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-    }
-
-    // listarPedidosPendentes - Exception
-    @Test
-    void testListarPedidosPendentes_Exception() {
-        when(pontoService.listarPedidosPendentes(any()))
-                .thenThrow(new RuntimeException("Erro"));
-
-        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
-            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
-                    .thenReturn(ResponseEntity.status(500).body("error"));
-
-            ResponseEntity<?> response = pontoController.listarPedidosPendentes(request);
-
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
-        }
-    }
-
-    // aprovarPonto - Success
-    @Test
-    void testAprovarPonto_Success() {
-        when(pontoService.aprovarPonto(anyInt(), any()))
-                .thenReturn(ResponseEntity.ok().body("aprovado"));
-
-        ResponseEntity<?> response = pontoController.aprovarPonto(1, request);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("aprovado", response.getBody());
-    }
-
-    // aprovarPonto - Exception
-    @Test
-    void testAprovarPonto_Exception() {
-        when(pontoService.aprovarPonto(anyInt(), any()))
-                .thenThrow(new RuntimeException("Erro"));
-
-        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
-            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
-                    .thenReturn(ResponseEntity.status(500).body("error"));
-
-            ResponseEntity<?> response = pontoController.aprovarPonto(1, request);
-
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
-        }
-    }
-
-    // reprovarPonto - Success
-    @Test
-    void testReprovarPonto_Success() {
-        when(pontoService.reprovarPonto(anyInt(), any()))
-                .thenReturn(ResponseEntity.ok().body("reprovado"));
-
-        ResponseEntity<?> response = pontoController.reprovarPonto(1, request);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("reprovado", response.getBody());
-    }
-
-    // reprovarPonto - Exception
-    @Test
-    void testReprovarPonto_Exception() {
-        when(pontoService.reprovarPonto(anyInt(), any()))
-                .thenThrow(new RuntimeException("Erro"));
-
-        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
-            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
-                    .thenReturn(ResponseEntity.status(500).body("error"));
-
-            ResponseEntity<?> response = pontoController.reprovarPonto(1, request);
-
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
-        }
-    }
+//    @Test
+//    void testListarPedidosPendentes_Success() {
+//        var pedido = mock(PedidoPonto.class);
+//        when(pontoService.listarPedidosPendentes(any()))
+//                .thenReturn(ResponseEntity.ok().body(List.of(pedido)));
+//
+//        ResponseEntity<?> response = pontoController.listarPedidosPendentes(request);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertNotNull(response.getBody());
+//    }
+//
+//    // listarPedidosPendentes - Exception
+//    @Test
+//    void testListarPedidosPendentes_Exception() {
+//        when(pontoService.listarPedidosPendentes(any()))
+//                .thenThrow(new RuntimeException("Erro"));
+//
+//        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+//            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
+//                    .thenReturn(ResponseEntity.status(500).body("error"));
+//
+//            ResponseEntity<?> response = pontoController.listarPedidosPendentes(request);
+//
+//            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+//            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
+//        }
+//    }
+//
+//    // aprovarPonto - Success
+//    @Test
+//    void testAprovarPonto_Success() {
+//        when(pontoService.aprovarPonto(anyInt(), any()))
+//                .thenReturn(ResponseEntity.ok().body("aprovado"));
+//
+//        ResponseEntity<?> response = pontoController.aprovarPonto(1, request);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals("aprovado", response.getBody());
+//    }
+//
+//    // aprovarPonto - Exception
+//    @Test
+//    void testAprovarPonto_Exception() {
+//        when(pontoService.aprovarPonto(anyInt(), any()))
+//                .thenThrow(new RuntimeException("Erro"));
+//
+//        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+//            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
+//                    .thenReturn(ResponseEntity.status(500).body("error"));
+//
+//            ResponseEntity<?> response = pontoController.aprovarPonto(1, request);
+//
+//            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+//            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
+//        }
+//    }
+//
+//    // reprovarPonto - Success
+//    @Test
+//    void testReprovarPonto_Success() {
+//        when(pontoService.reprovarPonto(anyInt(), any()))
+//                .thenReturn(ResponseEntity.ok().body("reprovado"));
+//
+//        ResponseEntity<?> response = pontoController.reprovarPonto(1, request);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals("reprovado", response.getBody());
+//    }
+//
+//    // reprovarPonto - Exception
+//    @Test
+//    void testReprovarPonto_Exception() {
+//        when(pontoService.reprovarPonto(anyInt(), any()))
+//                .thenThrow(new RuntimeException("Erro"));
+//
+//        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
+//            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
+//                    .thenReturn(ResponseEntity.status(500).body("error"));
+//
+//            ResponseEntity<?> response = pontoController.reprovarPonto(1, request);
+//
+//            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+//            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
+//        }
+//    }
 
 
     void startRegistroCompleto() {

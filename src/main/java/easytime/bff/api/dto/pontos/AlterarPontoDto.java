@@ -11,8 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public record AlterarPontoDto(
-        @NotNull Integer idPonto,
-        @NotBlank @NotNull String data,
+        String login,
+        Integer idPonto,
+        String data,
         LocalTime entrada1,
         LocalTime saida1,
         LocalTime entrada2,
