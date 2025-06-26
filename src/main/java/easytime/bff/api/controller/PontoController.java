@@ -168,67 +168,67 @@ public class PontoController {
         }
     }
 
-//    @GetMapping("/pedidos/pendentes")
-//    @Operation(summary = "Listar pedidos pendentes", description = "Retorna uma lista com os pedidos pendentes")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Lista de pedidos pendentes retornada com sucesso"),
-//            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-//    })
-//    @SecurityRequirement(name = "bearer-key")
-//    public ResponseEntity<?> listarPedidosPendentes(HttpServletRequest request){
-//        LOGGER.debug("Listando todos os pedidos de ponto pendentes");
-//        try {
-//            var response = service.listarPedidosPendentes(request);
-//            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-//        } catch (Exception e) {
-//            System.out.println(e.getLocalizedMessage());
-//            LOGGER.error("Erro ao listar pedidos pendetes", e);
-//            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
-//        }
-//    }
-//
-//    @PostMapping("aprovar/{id}")
-//    @Operation(summary = "Aprovar pedido de ponto", description = "Aprova um pedido de ponto com base no ID fornecido")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Pedido aprovado com sucesso"),
-//            @ApiResponse(responseCode = "404", description = "Nenhum ponto encontrado"),
-//            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-//            @ApiResponse(responseCode = "401", description = "Usuário não autorizado"),
-//            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-//    })
-//    @SecurityRequirement(name = "bearer-key")
-//    public ResponseEntity<?> aprovarPonto(@PathVariable Integer id, HttpServletRequest request) {
-//        LOGGER.debug("Aprovar pedidos pendentes de ponto");
-//        try {
-//            var response = service.aprovarPonto(id, request);
-//            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-//        } catch (Exception e) {
-//            System.out.println(e.getLocalizedMessage());
-//            LOGGER.error("Erro ao listar pedidos pendetes", e);
-//            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
-//        }
-//    }
-//
-//    @PostMapping("reprovar/{id}")
-//    @Operation(summary = "Reprovar pedido de ponto", description = "Reprova um pedido de ponto com base no ID fornecido")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Pedido reprovado com sucesso"),
-//            @ApiResponse(responseCode = "404", description = "Nenhum ponto encontrado"),
-//            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-//            @ApiResponse(responseCode = "401", description = "Usuário não autorizado"),
-//            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-//    })
-//    @SecurityRequirement(name = "bearer-key")
-//    public ResponseEntity<?> reprovarPonto(@PathVariable Integer id, HttpServletRequest request) {
-//        LOGGER.debug("Reprovar pedidos pendentes de ponto");
-//        try {
-//            var response = service.reprovarPonto(id, request);
-//            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-//        } catch (Exception e) {
-//            System.out.println(e.getLocalizedMessage());
-//            LOGGER.error("Erro ao listar pedidos pendetes", e);
-//            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
-//        }
-//    }
+    @GetMapping("/pedidos/pendentes")
+    @Operation(summary = "Listar pedidos pendentes", description = "Retorna uma lista com os pedidos pendentes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pedidos pendentes retornada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> listarPedidosPendentes(HttpServletRequest request){
+        LOGGER.debug("Listando todos os pedidos de ponto pendentes");
+        try {
+            var response = service.listarPedidosPendentes(request);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            LOGGER.error("Erro ao listar pedidos pendetes", e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @PostMapping("aprovar/{id}")
+    @Operation(summary = "Aprovar pedido de ponto", description = "Aprova um pedido de ponto com base no ID fornecido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido aprovado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Nenhum ponto encontrado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> aprovarPonto(@PathVariable Integer id, HttpServletRequest request) {
+        LOGGER.debug("Aprovar pedidos pendentes de ponto");
+        try {
+            var response = service.aprovarPonto(id, request);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            LOGGER.error("Erro ao listar pedidos pendetes", e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @PostMapping("reprovar/{id}")
+    @Operation(summary = "Reprovar pedido de ponto", description = "Reprova um pedido de ponto com base no ID fornecido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido reprovado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Nenhum ponto encontrado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> reprovarPonto(@PathVariable Integer id, HttpServletRequest request) {
+        LOGGER.debug("Reprovar pedidos pendentes de ponto");
+        try {
+            var response = service.reprovarPonto(id, request);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            LOGGER.error("Erro ao listar pedidos pendetes", e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
 
 }
