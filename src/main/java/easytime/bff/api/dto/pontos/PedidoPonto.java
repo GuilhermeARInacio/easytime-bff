@@ -8,6 +8,7 @@ public record PedidoPonto(
         Integer id,
         String login,
         Integer idPonto,
+        String dataRegistro,
         String statusRegistro,
         String statusPedido,
         String tipo_pedido,
