@@ -160,6 +160,7 @@ public class PontoController {
         LOGGER.debug("Listando todos os pedidos de ponto");
         try {
             var response = service.listarPedidos(request);
+            LOGGER.info("Listagem de pedidos realizada com sucesso");
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
@@ -179,10 +180,11 @@ public class PontoController {
         LOGGER.debug("Listando todos os pedidos de ponto pendentes");
         try {
             var response = service.listarPedidosPendentes(request);
+            LOGGER.info("Listagem de pedidos pendentes realizada com sucesso");
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-            LOGGER.error("Erro ao listar pedidos pendetes", e);
+            LOGGER.error("Erro ao listar pedidos pendentes", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
@@ -201,10 +203,11 @@ public class PontoController {
         LOGGER.debug("Aprovar pedidos pendentes de ponto");
         try {
             var response = service.aprovarPonto(id, request);
+            LOGGER.info("Aprovação de pedido realizada com sucesso para pedido com id: {}", id);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-            LOGGER.error("Erro ao listar pedidos pendetes", e);
+            LOGGER.error("Erro ao aprovar pedido", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
@@ -223,10 +226,11 @@ public class PontoController {
         LOGGER.debug("Reprovar pedidos pendentes de ponto");
         try {
             var response = service.reprovarPonto(id, request);
+            LOGGER.info("Recusa de pedido realizada com sucesso para pedido com id: {}", id);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-            LOGGER.error("Erro ao listar pedidos pendetes", e);
+            LOGGER.error("Erro ao listar pedidos recusar pedido", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
