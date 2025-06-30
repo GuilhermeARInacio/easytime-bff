@@ -20,6 +20,8 @@ public class ExceptionHandlerUtil {
                 return ResponseEntity.status(statusCode).body("Usuário não encontrado.");
             } else if (e.getMessage().contains("502") || e.getMessage().contains("500")) {
                 return ResponseEntity.internalServerError().body(e.getMessage());
+            } else if (e.getMessage().contains("Connection refused")) {
+                return ResponseEntity.internalServerError().body(e.getMessage());
             }
             logger.warn("Erro de execução: {}", e.getMessage());
             return ResponseEntity.status(statusCode).body(e.getMessage());
