@@ -23,7 +23,9 @@ class ValidacaoHorarioInvalidoTest {
                 LocalTime.of(13, 0),       // entrada2
                 LocalTime.of(17, 0),       // saida2
                 null,                      // entrada3 (can be null)
-                null                       // saida3 (can be null)
+                null,
+                "teste",
+                "status"
         );
         assertDoesNotThrow(() -> validacao.validar(dto));
     }
@@ -39,7 +41,9 @@ class ValidacaoHorarioInvalidoTest {
                 null,       // entrada2
                 null,       // saida2
                 null,                      // entrada3 (can be null)
-                null                       // saida3 (can be null)
+                null,
+                "teste",
+                "status"
         );
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> validacao.validar(dto));
         assertEquals("Horários entre 23h e 6h não são permitidos.", ex.getMessage());
@@ -56,7 +60,9 @@ class ValidacaoHorarioInvalidoTest {
                 null,       // entrada2
                 null,       // saida2
                 null,                      // entrada3 (can be null)
-                null                       // saida3 (can be null)
+                null,
+                "teste",
+                "status"
         );
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> validacao.validar(dto));
         assertEquals("Horários entre 23h e 6h não são permitidos.", ex.getMessage());

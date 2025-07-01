@@ -235,4 +235,27 @@ public class PontoController {
         }
     }
 
+    @GetMapping("pedido/{id}")
+    @Operation(summary = "Consultar pedido de ponto", description = "Usuário consulta um pedido de alteração.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido consultado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Nenhum ponto encontrado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> consultarPedidoId(@PathVariable Integer id, HttpServletRequest request) {
+        LOGGER.debug("Consultando pedido do ponto com id: {}", id);
+        try {
+            var response = service.consultarPedidoId(id, request);
+            LOGGER.info("Consulta de pedido realizada com sucesso do ponto com id: {}", id);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            LOGGER.error("Erro ao consultar pedido com id: {}", id, e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
 }

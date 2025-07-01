@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import static org.springframework.http.HttpMethod.*;
@@ -106,5 +107,12 @@ public class PontoService {
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, POST, new HttpEntity<>(headers), String.class);
+    }
+
+    public ResponseEntity<AlterarPontoDto> consultarPedidoId(Integer id, HttpServletRequest request) {
+        String url = urlSrv + urlPonto +"/pedido/" + id;
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+
+        return restTemplate.exchange(url, GET, new HttpEntity<>(headers), AlterarPontoDto.class);
     }
 }

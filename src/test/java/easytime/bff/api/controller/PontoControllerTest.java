@@ -387,7 +387,8 @@ class PontoControllerTest {
                 Time.valueOf("17:00:00"),
                 null,
                 null,
-                Status.PENDENTE
+                Status.PENDENTE,
+                false
         );
     }
 }

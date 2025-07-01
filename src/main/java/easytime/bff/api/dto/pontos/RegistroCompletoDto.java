@@ -17,6 +17,7 @@ public record RegistroCompletoDto (
         Time saida2,
         Time entrada3,
         Time saida3,
-        Status status
+        Status status,
+        boolean temAlteracao
 ){
 }
