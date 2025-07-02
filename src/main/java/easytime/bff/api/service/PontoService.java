@@ -1,7 +1,6 @@
 package easytime.bff.api.service;
 
 import easytime.bff.api.dto.pontos.*;
-import easytime.bff.api.dto.usuario.LoginDto;
 import easytime.bff.api.infra.security.TokenService;
 import easytime.bff.api.util.HttpHeaderUtil;
 import easytime.bff.api.validacoes.alterar_ponto.ValidacaoAlterarPonto;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import static org.springframework.http.HttpMethod.*;
@@ -31,7 +29,7 @@ public class PontoService {
     @Value("${SRV_URL}")
     private String urlSrv;
 
-    private String urlPonto = "ponto";
+    private String urlPonto = "ponto/";
 
     @Autowired
     private List<ValidacaoAlterarPonto> validacoes;
@@ -45,14 +43,14 @@ public class PontoService {
     }
 
     public ResponseEntity<String> deletarPonto(Integer id, HttpServletRequest request) {
-        String url = urlSrv + urlPonto + "/" + id;
+        String url = urlSrv + urlPonto + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, DELETE, new HttpEntity<>(headers), String.class);
     }
 
     public ResponseEntity<List<RegistroCompletoDto>> consultarPonto(ConsultaPontoDTO dto, HttpServletRequest request) {
-        String url = urlSrv + urlPonto + "/consulta";
+        String url = urlSrv + urlPonto + "consulta";
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
         HttpEntity<ConsultaPontoDTO> entity = new HttpEntity<>(dto, headers);
 
@@ -61,7 +59,7 @@ public class PontoService {
     }
 
     public ResponseEntity<String> alterarPonto(AlterarPontoDto dto, HttpServletRequest request) {
-        String url = urlSrv + "ponto/alterar";
+        String url = urlSrv + urlPonto + "alterar";
 
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
         HttpEntity<AlterarPontoDto> entity = new HttpEntity<>(dto, headers);
@@ -80,37 +78,47 @@ public class PontoService {
     }
 
     public ResponseEntity<List<PedidoPonto>> listarPedidos(HttpServletRequest request) {
-        String url = urlSrv + urlPonto +"/pedidos/all" ;
+        String url = urlSrv + urlPonto +"pedidos/all" ;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
                 new ParameterizedTypeReference<List<PedidoPonto>>() {});
     }
 
-    public ResponseEntity<List<PedidoPonto>> listarPedidosPendentes(HttpServletRequest request) {
-        String url = urlSrv + urlPonto +"/pedidos/pendentes" ;
+    public ResponseEntity<List<PedidoPonto>> listarPedidosPorStatus(ConsultaStatus dto, HttpServletRequest request) {
+        String url = urlSrv + urlPonto + "pedidos/status";
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        HttpEntity<ConsultaStatus> entity = new HttpEntity<>(dto, headers);
 
-        return restTemplate.exchange(url, GET, new HttpEntity<>(headers),
+        return restTemplate.exchange(url, PUT, entity,
+                new ParameterizedTypeReference<List<PedidoPonto>>() {});
+    }
+
+    public ResponseEntity<List<PedidoPonto>> listarPedidosPorPeriodo(ConsultaPontoDTO dto, HttpServletRequest request) {
+        String url = urlSrv + urlPonto + "pedidos/periodo";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        HttpEntity<ConsultaPontoDTO> entity = new HttpEntity<>(dto, headers);
+
+        return restTemplate.exchange(url, PUT, entity,
                 new ParameterizedTypeReference<List<PedidoPonto>>() {});
     }
 
     public ResponseEntity<String> aprovarPonto(Integer id, HttpServletRequest request) {
-        String url = urlSrv + urlPonto +"/aprovar/" + id;
+        String url = urlSrv + urlPonto +"aprovar/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, POST, new HttpEntity<>(headers), String.class);
     }
 
     public ResponseEntity<String> reprovarPonto(Integer id, HttpServletRequest request) {
-        String url = urlSrv + urlPonto +"/reprovar/" + id;
+        String url = urlSrv + urlPonto +"reprovar/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, POST, new HttpEntity<>(headers), String.class);
     }
 
     public ResponseEntity<AlterarPontoDto> consultarPedidoId(Integer id, HttpServletRequest request) {
-        String url = urlSrv + urlPonto +"/pedido/" + id;
+        String url = urlSrv + urlPonto + "pedido/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, GET, new HttpEntity<>(headers), AlterarPontoDto.class);

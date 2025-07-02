@@ -163,19 +163,20 @@ class PontoServiceTest {
     }
 
     @Test
-    void listarPedidosPendentes_shouldCallRestTemplate() {
+    void listarPedidosPorStatus_shouldCallRestTemplate() {
         var pedido = mock(PedidoPonto.class);
         List<PedidoPonto> pedidos = List.of(pedido);
         ResponseEntity<List<PedidoPonto>> expected = ResponseEntity.ok(pedidos);
+        ConsultaStatus status = new ConsultaStatus(Status.PENDENTE);
 
         when(restTemplate.exchange(
-                eq("http://localhost:8080/ponto/pedidos/pendentes"),
+                eq("http://localhost:8080/ponto/pedidos/status"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 ArgumentMatchers.<ParameterizedTypeReference<List<PedidoPonto>>>any()
         )).thenReturn(expected);
 
-        ResponseEntity<List<PedidoPonto>> result = pontoService.listarPedidosPendentes(request);
+        ResponseEntity<List<PedidoPonto>> result = pontoService.listarPedidosPorStatus(status, request);
 
         assertEquals(expected, result);
     }

@@ -1,8 +1,6 @@
 package easytime.bff.api.controller;
 
-import easytime.bff.api.dto.pontos.AlterarPontoDto;
-import easytime.bff.api.dto.pontos.BaterPonto;
-import easytime.bff.api.dto.pontos.ConsultaPontoDTO;
+import easytime.bff.api.dto.pontos.*;
 import easytime.bff.api.service.PontoService;
 import easytime.bff.api.util.ExceptionHandlerUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.time.DateTimeException;
 
 @Controller
 @RestController
@@ -169,22 +164,42 @@ public class PontoController {
         }
     }
 
-    @GetMapping("/pedidos/pendentes")
-    @Operation(summary = "Listar pedidos pendentes", description = "Retorna uma lista com os pedidos pendentes")
+    @PutMapping("/pedidos/status")
+    @Operation(summary = "Listar pedidos por status", description = "Retorna uma lista com os pedidos de acordo com os status informado.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de pedidos pendentes retornada com sucesso"),
+            @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> listarPedidosPendentes(HttpServletRequest request){
-        LOGGER.debug("Listando todos os pedidos de ponto pendentes");
+    public ResponseEntity<?> listarPedidosPorStatus(@RequestBody ConsultaStatus status, HttpServletRequest request){
+        LOGGER.debug("Listando todos os pedidos de ponto com status: {}", status.status());
         try {
-            var response = service.listarPedidosPendentes(request);
-            LOGGER.info("Listagem de pedidos pendentes realizada com sucesso");
+            var response = service.listarPedidosPorStatus(status, request);
+            LOGGER.info("Listagem realizada com sucesso com os status: {}", status.status());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-            LOGGER.error("Erro ao listar pedidos pendentes", e);
+            LOGGER.error("Erro ao listar pedidos com status: {}", status.status(), e);
+            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
+        }
+    }
+
+    @PutMapping("/pedidos/periodo")
+    @Operation(summary = "Listar pedidos por período", description = "Retorna uma lista com os pedidos de acordo com o período informado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> listarPedidosPorPeriodo(@RequestBody ConsultaPontoDTO dto, HttpServletRequest request){
+        LOGGER.debug("Listando todos os pedidos entre o período de " + dto.dtInicio() + " e " + dto.dtFinal());
+        try {
+            var response = service.listarPedidosPorPeriodo(dto, request);
+            LOGGER.info("Listagem realizada com entre o período de " + dto.dtInicio() + " e " + dto.dtFinal());
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            LOGGER.error("Erro ao listar pedidos por periodo: ", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
