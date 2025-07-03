@@ -85,24 +85,6 @@ public class PontoService {
                 new ParameterizedTypeReference<List<PedidoPonto>>() {});
     }
 
-    public ResponseEntity<List<PedidoPonto>> listarPedidosPorStatus(ConsultaStatus dto, HttpServletRequest request) {
-        String url = urlSrv + urlPonto + "pedidos/status";
-        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-        HttpEntity<ConsultaStatus> entity = new HttpEntity<>(dto, headers);
-
-        return restTemplate.exchange(url, PUT, entity,
-                new ParameterizedTypeReference<List<PedidoPonto>>() {});
-    }
-
-    public ResponseEntity<List<PedidoPonto>> listarPedidosPorPeriodo(ConsultaPontoDTO dto, HttpServletRequest request) {
-        String url = urlSrv + urlPonto + "pedidos/periodo";
-        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
-        HttpEntity<ConsultaPontoDTO> entity = new HttpEntity<>(dto, headers);
-
-        return restTemplate.exchange(url, PUT, entity,
-                new ParameterizedTypeReference<List<PedidoPonto>>() {});
-    }
-
     public ResponseEntity<String> aprovarPonto(Integer id, HttpServletRequest request) {
         String url = urlSrv + urlPonto + "aprovar/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
@@ -122,5 +104,14 @@ public class PontoService {
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, GET, new HttpEntity<>(headers), AlterarPontoDto.class);
+    }
+
+    public ResponseEntity<List<PedidoPonto>> filtrarPedidos(FiltroPedidos dto, HttpServletRequest request) {
+        String url = urlSrv + urlPonto + "pedidos/filtrar";
+        HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
+        HttpEntity<FiltroPedidos> entity = new HttpEntity<>(dto, headers);
+
+        return restTemplate.exchange(url, PUT, entity,
+                new ParameterizedTypeReference<List<PedidoPonto>>() {});
     }
 }

@@ -286,62 +286,30 @@ class PontoControllerTest {
         }
     }
 
-    // listarPedidosPorStatus - Success
     @Test
-    void testListarPedidosPorStatus_Success() {
+    void testfiltrarPedidos_Success() {
         var pedido = mock(PedidoPonto.class);
-        ConsultaStatus status = new ConsultaStatus(Status.PENDENTE);
-        when(pontoService.listarPedidosPorStatus(any(), any()))
+        FiltroPedidos dto = new FiltroPedidos("01/06/2025", "01/06/2025", Status.PENDENTE, "ALTERACAO");
+        when(pontoService.filtrarPedidos(any(), any()))
                 .thenReturn(ResponseEntity.ok().body(List.of(pedido)));
 
-        ResponseEntity<?> response = pontoController.listarPedidosPorStatus(status, request);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-    }
-
-    // listarPedidosPorStatus - Exception
-    @Test
-    void testListarPedidosPorStatus_Exception() {
-        ConsultaStatus status = new ConsultaStatus(Status.PENDENTE);
-        when(pontoService.listarPedidosPorStatus(any(), any()))
-                .thenThrow(new RuntimeException("Erro"));
-
-        try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
-            staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
-                    .thenReturn(ResponseEntity.status(500).body("error"));
-
-            ResponseEntity<?> response = pontoController.listarPedidosPorStatus(status, request);
-
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-            staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));
-        }
-    }
-
-    @Test
-    void testListarPedidosPorPeriodo_Success() {
-        var pedido = mock(PedidoPonto.class);
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "01/06/2025", "05/06/2025");
-        when(pontoService.listarPedidosPorPeriodo(any(), any()))
-                .thenReturn(ResponseEntity.ok().body(List.of(pedido)));
-
-        ResponseEntity<?> response = pontoController.listarPedidosPorPeriodo(dto, request);
+        ResponseEntity<?> response = pontoController.filtrarPedidos(dto, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
     @Test
-    void testListarPedidosPorPeriodo_Exception() {
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "01/06/2025", "05/06/2025");
-        when(pontoService.listarPedidosPorPeriodo(any(), any()))
+    void testFiltrarPedidos_Exception() {
+        FiltroPedidos dto = new FiltroPedidos("01/06/2025", "01/06/2025", Status.PENDENTE, "ALTERACAO");
+        when(pontoService.filtrarPedidos(any(), any()))
                 .thenThrow(new RuntimeException("Erro"));
 
         try (MockedStatic<ExceptionHandlerUtil> staticUtil = mockStatic(ExceptionHandlerUtil.class)) {
             staticUtil.when(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()))
                     .thenReturn(ResponseEntity.status(500).body("error"));
 
-            ResponseEntity<?> response = pontoController.listarPedidosPorPeriodo(dto, request);
+            ResponseEntity<?> response = pontoController.filtrarPedidos(dto, request);
 
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
             staticUtil.verify(() -> ExceptionHandlerUtil.tratarExcecao(any(), any()), times(1));

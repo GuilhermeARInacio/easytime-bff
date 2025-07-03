@@ -162,39 +162,20 @@ class PontoServiceTest {
     }
 
     @Test
-    void listarPedidosPorStatus_shouldCallRestTemplate() {
+    void listarFiltrarPedidos_shouldCallRestTemplate() {
         var pedido = mock(PedidoPonto.class);
         List<PedidoPonto> pedidos = List.of(pedido);
         ResponseEntity<List<PedidoPonto>> expected = ResponseEntity.ok(pedidos);
-        ConsultaStatus status = new ConsultaStatus(Status.PENDENTE);
+        FiltroPedidos dto = new FiltroPedidos("01/06/2025", "01/06/2025", Status.PENDENTE, "ALTERACAO");
 
         when(restTemplate.exchange(
-                eq("http://localhost:8080/ponto/pedidos/status"),
+                eq("http://localhost:8080/ponto/pedidos/filtrar"),
                 eq(HttpMethod.PUT),
                 any(HttpEntity.class),
                 ArgumentMatchers.<ParameterizedTypeReference<List<PedidoPonto>>>any()
         )).thenReturn(expected);
 
-        ResponseEntity<List<PedidoPonto>> result = pontoService.listarPedidosPorStatus(status, request);
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void listarPedidosPorPeriodo_shouldCallRestTemplate() {
-        var pedido = mock(PedidoPonto.class);
-        List<PedidoPonto> pedidos = List.of(pedido);
-        ResponseEntity<List<PedidoPonto>> expected = ResponseEntity.ok(pedidos);
-        ConsultaPontoDTO dto = new ConsultaPontoDTO("login", "01/06/2025", "05/06/2025");
-
-        when(restTemplate.exchange(
-                eq("http://localhost:8080/ponto/pedidos/periodo"),
-                eq(HttpMethod.PUT),
-                any(HttpEntity.class),
-                ArgumentMatchers.<ParameterizedTypeReference<List<PedidoPonto>>>any()
-        )).thenReturn(expected);
-
-        ResponseEntity<List<PedidoPonto>> result = pontoService.listarPedidosPorPeriodo(dto, request);
+        ResponseEntity<List<PedidoPonto>> result = pontoService.filtrarPedidos(dto, request);
 
         assertEquals(expected, result);
     }

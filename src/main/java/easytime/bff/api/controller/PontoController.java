@@ -164,42 +164,30 @@ public class PontoController {
         }
     }
 
-    @PutMapping("/pedidos/status")
-    @Operation(summary = "Listar pedidos por status", description = "Retorna uma lista com os pedidos de acordo com os status informado.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> listarPedidosPorStatus(@RequestBody ConsultaStatus status, HttpServletRequest request){
-        LOGGER.debug("Listando todos os pedidos de ponto com status: {}", status.status());
-        try {
-            var response = service.listarPedidosPorStatus(status, request);
-            LOGGER.info("Listagem realizada com sucesso com os status: {}", status.status());
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
-            LOGGER.error("Erro ao listar pedidos com status: {}", status.status(), e);
-            return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
-        }
-    }
-
-    @PutMapping("/pedidos/periodo")
+    @PutMapping("/pedidos/filtrar")
     @Operation(summary = "Listar pedidos por período", description = "Retorna uma lista com os pedidos de acordo com o período informado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @SecurityRequirement(name = "bearer-key")
-    public ResponseEntity<?> listarPedidosPorPeriodo(@RequestBody ConsultaPontoDTO dto, HttpServletRequest request){
-        LOGGER.debug("Listando todos os pedidos entre o período de " + dto.dtInicio() + " e " + dto.dtFinal());
+    public ResponseEntity<?> filtrarPedidos(@RequestBody FiltroPedidos dto, HttpServletRequest request){
+        LOGGER.debug("Listando pedidos de acordo com o filtro: " +
+                dto.dtInicio() + ", " +
+                dto.dtFinal() + ", " +
+                dto.tipo() + ", " +
+                dto.status());
         try {
-            var response = service.listarPedidosPorPeriodo(dto, request);
-            LOGGER.info("Listagem realizada com entre o período de " + dto.dtInicio() + " e " + dto.dtFinal());
+            var response = service.filtrarPedidos(dto, request);
+            LOGGER.info("Listagem concluido de pedidos de acordo com o filtro: " +
+                    dto.dtInicio() + ", " +
+                    dto.dtFinal() + ", " +
+                    dto.tipo() + ", " +
+                    dto.status());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-            LOGGER.error("Erro ao listar pedidos por periodo: ", e);
+            LOGGER.error("Erro ao listar pedidos com filtro: ", e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
