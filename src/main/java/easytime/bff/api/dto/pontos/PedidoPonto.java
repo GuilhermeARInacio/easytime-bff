@@ -13,6 +13,7 @@ public record PedidoPonto(
         String tipoPedido,
         String dataPedido,
         String statusRegistro,
+        String statusPedido,
         @JsonProperty("alteracaoPonto")
         AlterarPonto alterarPonto
 ){
