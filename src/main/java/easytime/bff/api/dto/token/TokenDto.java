@@ -1,4 +1,7 @@
 package easytime.bff.api.dto.token;
 
-public record TokenDto(String token) {
+public record TokenDto(
+        String token,
+        String role
+) {
 }
