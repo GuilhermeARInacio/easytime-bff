@@ -1,6 +1,8 @@
 package easytime.bff.api.dto.pontos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record PedidoPonto(
@@ -8,12 +10,10 @@ public record PedidoPonto(
         String login,
         Integer idPonto,
         String dataRegistro,
+        String tipoPedido,
+        String dataPedido,
         String statusRegistro,
+        @JsonProperty("alteracaoPonto")
         AlterarPonto alterarPonto
-//        String statusPedido,
-//        String tipo_pedido,
-//        String gestorLogin,
-//        String dataAprovacao,
-//        String justificativa
 ){
 }

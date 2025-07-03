@@ -104,14 +104,14 @@ public class PontoService {
     }
 
     public ResponseEntity<String> aprovarPonto(Integer id, HttpServletRequest request) {
-        String url = urlSrv + urlPonto +"aprovar/" + id;
+        String url = urlSrv + urlPonto + "aprovar/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, POST, new HttpEntity<>(headers), String.class);
     }
 
     public ResponseEntity<String> reprovarPonto(Integer id, HttpServletRequest request) {
-        String url = urlSrv + urlPonto +"reprovar/" + id;
+        String url = urlSrv + urlPonto + "reprovar/" + id;
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         return restTemplate.exchange(url, POST, new HttpEntity<>(headers), String.class);
