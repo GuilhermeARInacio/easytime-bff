@@ -59,7 +59,7 @@ class PontoServiceTest {
 
     @Test
     void registrarPonto_shouldCallRestTemplate() {
-        BaterPonto dto = new BaterPonto("08:00:00");
+        BaterPonto dto = new BaterPonto("08:00:00", "user");
         ResponseEntity<Object> expected = ResponseEntity.ok("ok");
         when(restTemplate.exchange(
                 eq("http://localhost:8080/ponto/"),
