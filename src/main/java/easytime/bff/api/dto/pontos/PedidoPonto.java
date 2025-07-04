@@ -15,6 +15,7 @@ public record PedidoPonto(
         String statusRegistro,
         String statusPedido,
         @JsonProperty("alteracaoPonto")
-        AlterarPonto alterarPonto
+        AlterarPonto alterarPonto,
+        RegistroCompletoDto registroPonto
 ){
 }
