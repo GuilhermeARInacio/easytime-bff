@@ -62,7 +62,7 @@ class PontoServiceTest {
         BaterPonto dto = new BaterPonto("08:00:00", "user");
         ResponseEntity<Object> expected = ResponseEntity.ok("ok");
         when(restTemplate.exchange(
-                eq("http://localhost:8080/ponto/"),
+                eq("http://localhost:8080/ponto"),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 eq(Object.class)
