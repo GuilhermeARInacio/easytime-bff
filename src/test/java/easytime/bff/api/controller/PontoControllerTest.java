@@ -44,7 +44,7 @@ class PontoControllerTest {
     void testRegistrarPonto_Success() {
         // Arrange
         LoginDto loginDto = new LoginDto("");
-        BaterPonto dto = new BaterPonto("08:00:00");
+        BaterPonto dto = new BaterPonto("08:00:00", "user");
 
         when(pontoService.registrarPonto(any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(""));
@@ -60,7 +60,7 @@ class PontoControllerTest {
     void testRegistrarPonto_InvalidLogin() {
         // Arrange
         LoginDto loginDto = new LoginDto(""); // LoginDto vazio
-        BaterPonto dto = new BaterPonto("08:00:00");
+        BaterPonto dto = new BaterPonto("08:00:00", "user");
         // Act
         var response = pontoController.registrarPonto(dto, request);
 

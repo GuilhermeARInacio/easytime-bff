@@ -35,7 +35,7 @@ public class PontoService {
     private List<ValidacaoAlterarPonto> validacoes;
 
     public ResponseEntity<Object> registrarPonto(BaterPonto dto, HttpServletRequest request) {
-        String url = urlSrv + urlPonto;
+        String url = urlSrv + "ponto";
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         HttpEntity<BaterPonto> entity = new HttpEntity<>(dto, headers);

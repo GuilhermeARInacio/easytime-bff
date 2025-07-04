@@ -34,13 +34,13 @@ public class PontoController {
     })
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> registrarPonto(@RequestBody BaterPonto dto, HttpServletRequest request) {
-        LOGGER.debug("Registrando ponto para o usuário");
+        LOGGER.debug("Registrando ponto para o usuário: {}", dto.usuario());
         try {
             ResponseEntity<?> response = service.registrarPonto(dto, request);
-            LOGGER.info("Ponto registrado para o usuário");
+            LOGGER.info("Ponto registrado para o usuário: {}", dto.usuario());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
-            LOGGER.error("Erro ao registrar ponto para o usuário");
+            LOGGER.error("Erro ao registrar ponto para o usuário: {}", dto.usuario(), e);
             return ExceptionHandlerUtil.tratarExcecao(e, LOGGER);
         }
     }
