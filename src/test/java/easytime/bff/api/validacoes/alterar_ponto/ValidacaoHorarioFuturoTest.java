@@ -4,6 +4,7 @@ import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -16,10 +17,11 @@ class ValidacaoHorarioFuturoTest {
 
     @Test
     void validar_devePermitirHorarioAnteriorAoAtual() {
-        LocalTime horarioAtual = LocalTime.of(19, 0);
+        LocalDateTime horarioAtual = LocalDateTime.of(2025, 07, 01, 19, 0);
 
         var dto = mock(AlterarPontoDto.class);
         when(dto.horarioAtual()).thenReturn(horarioAtual);
+        when(dto.data()).thenReturn("10/06/2025");
         when(dto.entrada1()).thenReturn(LocalTime.of(8, 0));
         when(dto.saida1()).thenReturn(LocalTime.of(12, 0));
         when(dto.entrada2()).thenReturn(LocalTime.of(13, 0));
@@ -32,10 +34,11 @@ class ValidacaoHorarioFuturoTest {
 
     @Test
     void validar_deveLancarExcecaoParaHorarioFuturo() {
-        LocalTime horarioAtual = LocalTime.of(14, 0);
+        LocalDateTime horarioAtual = LocalDateTime.of(2025, 07, 01, 14, 0);
 
         var dto = mock(AlterarPontoDto.class);
         when(dto.horarioAtual()).thenReturn(horarioAtual);
+        when(dto.data()).thenReturn("01/07/2025");
         when(dto.entrada1()).thenReturn(LocalTime.of(8, 0));
         when(dto.saida1()).thenReturn(LocalTime.of(12, 0));
         when(dto.entrada2()).thenReturn(LocalTime.of(13, 0));

@@ -1,11 +1,14 @@
 package easytime.bff.api.validacoes.alterar_ponto;
 
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
+import easytime.bff.api.util.DateUtil;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +22,11 @@ public class ValidacaoHorarioFuturo implements ValidacaoAlterarPonto{
             try{
                 Method metodo = AlterarPontoDto.class.getDeclaredMethod(campo);
                 LocalTime time = (LocalTime) metodo.invoke(dto);
-                if(time != null && (time.isAfter(dto.horarioAtual()))) {
-                    throw new IllegalArgumentException("O horário não pode ser após o horário atual.");
+                if(time != null) {
+                    LocalDateTime timeAndDay = time.atDate(DateUtil.convertUserDateToDBDate(dto.data()));
+                    if (timeAndDay.isAfter(dto.horarioAtual())){
+                        throw new IllegalArgumentException("O horário não pode ser após o horário atual.");
+                    }
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException("Erro ao validar campo: " + campo, e);

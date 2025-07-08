@@ -3,6 +3,7 @@ package easytime.bff.api.validacoes.alterar_ponto;
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +27,7 @@ class ValidacaoHorarioInvalidoTest {
                 null,
                 "teste",
                 "status",
-                LocalTime.now()
+                LocalDateTime.now()
         );
         assertDoesNotThrow(() -> validacao.validar(dto));
     }
@@ -45,7 +46,7 @@ class ValidacaoHorarioInvalidoTest {
                 null,
                 "teste",
                 "status",
-                LocalTime.now()
+                LocalDateTime.now()
         );
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> validacao.validar(dto));
         assertEquals("Horários entre 23h e 6h não são permitidos.", ex.getMessage());
@@ -65,7 +66,7 @@ class ValidacaoHorarioInvalidoTest {
                 null,
                 "teste",
                 "status",
-                LocalTime.now()
+                LocalDateTime.now()
         );
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> validacao.validar(dto));
         assertEquals("Horários entre 23h e 6h não são permitidos.", ex.getMessage());
