@@ -38,7 +38,7 @@ class PontoServiceTest {
     private MockedStatic<HttpHeaderUtil> staticHttpHeaderUtil;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         mocks = MockitoAnnotations.openMocks(this);
         headers = new HttpHeaders();
         headers.add("Authorization", "Bearer token");
@@ -59,8 +59,7 @@ class PontoServiceTest {
 
     @Test
     void registrarPonto_shouldCallRestTemplate() {
-        LoginDto loginDto = new LoginDto("user");
-        BaterPonto dto = new BaterPonto("08:00:00");
+        BaterPonto dto = new BaterPonto("08:00:00", "user");
         ResponseEntity<Object> expected = ResponseEntity.ok("ok");
         when(restTemplate.exchange(
                 eq("http://localhost:8080/ponto"),
@@ -133,7 +132,7 @@ class PontoServiceTest {
         ResponseEntity<List<RegistroCompletoDto>> expected = ResponseEntity.ok(list);
 
         when(restTemplate.exchange(
-                eq("http://localhost:8080/ponto"),
+                eq("http://localhost:8080/ponto/"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 ArgumentMatchers.<ParameterizedTypeReference<List<RegistroCompletoDto>>>any()
@@ -163,20 +162,38 @@ class PontoServiceTest {
     }
 
     @Test
-    void listarPedidosPorStatus_shouldCallRestTemplate() {
+    void listarFiltrarPedidos_shouldCallRestTemplate() {
         var pedido = mock(PedidoPonto.class);
         List<PedidoPonto> pedidos = List.of(pedido);
         ResponseEntity<List<PedidoPonto>> expected = ResponseEntity.ok(pedidos);
-        ConsultaStatus status = new ConsultaStatus(Status.PENDENTE);
+        FiltroPedidos dto = new FiltroPedidos("01/06/2025", "01/06/2025", Status.PENDENTE, "ALTERACAO");
 
         when(restTemplate.exchange(
-                eq("http://localhost:8080/ponto/pedidos/status"),
-                eq(HttpMethod.GET),
+                eq("http://localhost:8080/ponto/pedidos/filtrar"),
+                eq(HttpMethod.PUT),
                 any(HttpEntity.class),
                 ArgumentMatchers.<ParameterizedTypeReference<List<PedidoPonto>>>any()
         )).thenReturn(expected);
 
-        ResponseEntity<List<PedidoPonto>> result = pontoService.listarPedidosPorStatus(status, request);
+        ResponseEntity<List<PedidoPonto>> result = pontoService.filtrarPedidos(dto, request);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void consultarPedidoId_shouldCallRestTemplate() {
+        AlterarPontoDto pedido = mock(AlterarPontoDto.class);
+        ResponseEntity<AlterarPontoDto> expected = ResponseEntity.ok(pedido);
+        Integer id = 1;
+
+        when(restTemplate.exchange(
+                eq("http://localhost:8080/ponto/pedido/" + id),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(AlterarPontoDto.class)
+        )).thenReturn(expected);
+
+        ResponseEntity<AlterarPontoDto> result = pontoService.consultarPedidoId(id, request);
 
         assertEquals(expected, result);
     }
