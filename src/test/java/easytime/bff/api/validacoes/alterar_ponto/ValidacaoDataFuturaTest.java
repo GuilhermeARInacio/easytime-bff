@@ -1,10 +1,8 @@
 package easytime.bff.api.validacoes.alterar_ponto;
 
 import easytime.bff.api.dto.pontos.AlterarPontoDto;
-import easytime.bff.api.util.DateUtil;
 import org.junit.jupiter.api.Test;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +11,7 @@ import static org.mockito.Mockito.*;
 
 class ValidacaoDataFuturaTest {
 
-    private final ValidacaoDataFutura validacao = new ValidacaoDataFutura();
+    private final ValidacaoHorarioFuturo validacao = new ValidacaoHorarioFuturo();
 
     @Test
     void validar_devePermitirDataHojeOuPassada() {

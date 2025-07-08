@@ -194,8 +194,17 @@ public class PontoController {
     public ResponseEntity<?> listarPedidosPorPeriodo(@RequestBody ConsultaPontoDTO dto, HttpServletRequest request){
         LOGGER.debug("Listando todos os pedidos entre o período de " + dto.dtInicio() + " e " + dto.dtFinal());
         try {
+<<<<<<< Updated upstream
             var response = service.listarPedidosPorPeriodo(dto, request);
             LOGGER.info("Listagem realizada com entre o período de " + dto.dtInicio() + " e " + dto.dtFinal());
+=======
+            var response = service.filtrarPedidos(dto, request);
+            LOGGER.info("Listagem de pedidos concluída de acordo com o filtro: " +
+                    dto.dtInicio() + ", " +
+                    dto.dtFinal() + ", " +
+                    dto.tipo() + ", " +
+                    dto.status());
+>>>>>>> Stashed changes
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());

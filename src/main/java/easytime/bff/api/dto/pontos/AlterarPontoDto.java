@@ -21,6 +21,7 @@ public record AlterarPontoDto(
         LocalTime entrada3,
         LocalTime saida3,
         String justificativa,
-        String status
+        String status,
+        LocalTime horarioAtual
 ) {
 }
