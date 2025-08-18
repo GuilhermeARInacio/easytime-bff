@@ -32,7 +32,7 @@ public class UsuarioController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsuarioController.class);
 
-    @PutMapping("/create")
+    @PostMapping("/create")
     @Operation(summary = "Criar usuário", description = "Envia um UsuarioDto para api e cria um usuário no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
