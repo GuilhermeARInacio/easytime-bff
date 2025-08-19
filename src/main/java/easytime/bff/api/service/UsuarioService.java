@@ -30,7 +30,7 @@ public class UsuarioService {
         HttpHeaders headers = HttpHeaderUtil.copyHeaders(request);
 
         HttpEntity<UsuarioDto> entity = new HttpEntity<>(dto, headers);
-        return restTemplate.exchange(url, PUT, entity, Object.class);
+        return restTemplate.exchange(url, POST, entity, Object.class);
     }
 
     public ResponseEntity<List<UsuarioRetornoDto>> listarUsuarios(HttpServletRequest request) {
